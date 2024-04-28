@@ -1,3 +1,0 @@
-[submodule "src/InstitutionalDynamics.jl"]
-	path = src/InstitutionalDynamics.jl
-	url = https://github.com/jstonge/InstitutionalDynamics.jl
