@@ -72,8 +72,11 @@ process_raw_data_coevo:
 #                       #
 #########################
 
+.PHONY: clean
+
 clean:
 	rm -rf docs/.observablehq/cache
+
 # rm -f sourcesink$(model)_output/* || true
 # rm -f sourcesink$(model)_output/vacc_script/* || true
 # rm sourcesink$(model).parquet || true
