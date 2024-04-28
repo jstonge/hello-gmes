@@ -152,7 +152,22 @@ A typical Framework project looks like this:
 
 <br>
 
-## The science of science of groups
+In our dashboard, we cache the results from parameter sweeps. If you are interested in a particular set of parameters, you need to 
+
+```
+# clone and init InstitutionalDynamics.jl git submodules
+git clone --recurse-submodules https://github.com/jstonge/hello-gmes.git
+cd ./hello-gmes
+# run single run with make, e.g.
+make single-run-coevo BETA=0.16 RHO=0.05 ETA=0.26 XI=1 ALPHA=1. GAMMA=1 B=0.2 C=0.5
+npm run dev
+```
+
+When the app is up and running, you can try other other parameters values as well. 
+
+Make sure you have installed `julia=1.8`.
+
+## Group-based modeling
 
 In this collection of notebooks, we examine how array of institutional responses arises from group dynamics.
 
