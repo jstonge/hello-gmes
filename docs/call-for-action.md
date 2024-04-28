@@ -45,6 +45,8 @@ const s2 = view(Inputs.form({
 
 #### Decomposing the call for action
 
+<img src="../static/quadrant.png">
+image = FileAttachment("image.png").image()
 In construction 🚧
 
 ```js
