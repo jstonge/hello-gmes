@@ -99,18 +99,35 @@ A typical Framework project looks like this:
 
 In our dashboard, we cache the results from parameter sweeps. If you are interested in a particular set of parameters, you need to 
 
-```
+```zsh
 # clone and init InstitutionalDynamics.jl git submodules
 git clone --recurse-submodules https://github.com/jstonge/hello-gmes.git
 cd ./hello-gmes
+```
+
+Now that we have cloned the repo and are in root dir, we install `Julia` dependencies
+
+```zsh
+julia
+julia> ]
+(@v1.10) pkg> activate .
+(hello-GMEs) pkg> instantiate
+# ctrl+d to quit
+```
+
+Right now the libs are compiled for `Julia 1.10` and higher. Once done, we can run the single-run with `make`, and launch the app. The run will show up in the `single-run/` page once finished running:
+
+```zsh
 # run single run with make, e.g.
 make single-run-coevo BETA=0.16 RHO=0.05 ETA=0.26 XI=1 ALPHA=1. GAMMA=1 B=0.2 C=0.5
+# install observable app
+npm install
+# launch the app
 npm run dev
 ```
 
 When the app is up and running, you can try other other parameters values as well. 
 
-Make sure you have installed `julia=1.8`.
 
 ## Group-based modeling
 
