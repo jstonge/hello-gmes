@@ -8,7 +8,7 @@ sql:
 ---
 
 # Paradoxes in the co-evolution of contagions and institutions
-## Exploring the interplay between the speed of institutions and the transmission rate of the contagions to study co-evolutionary dynamics of known biological and social contagions [(St-Onge, Burgio, et al 2024)](https://arxiv.org/abs/2310.03672).
+## Exploring the co-evolutionary dynamics between epidemic spreading and institutional adaptation [(J. St-Onge, G. Burgio, _et al_, 2024)](https://arxiv.org/abs/2310.03672).
 
 ```js
 const r2 = view(Inputs.form({
