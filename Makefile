@@ -14,27 +14,37 @@ SCRIPT_DIR=./src
 #                        #
 ##########################
 
+.PHONY: single-run-source-sink
 
-.PHONY: single_run
+BETA=0.07
+ALPHA=0.5
+GAMMA=1.
+RHO=0.1
+B=0.18
+COST=1.05
+MU=1e-4
+single-run-source-sink: 
+	mkdir -p tmp/
+	julia --project=@. src/InstitutionalDynamics.jl/src/sourcesink1.jl --beta $(BETA) -g $(GAMMA) -r $(RHO) -b $(B) -c $(COST) -m $(MU)
+	mv sourcesink1* tmp/
+	julia --project=@. src/processing.jl -i tmp/ -o docs/data/single_run
+	rm -rf tmp/
 
-# Note can these results can only be run on the UVM cluster. 
-run: populate_param_db get_vacc_scripts run_vacc_scripts process_raw_data_coevo
-
-populate_param_db:
-	julia $(SCRIPT_DIR)/source-sink-db.jl -m $(model)
-
-get_vacc_scripts:
-	julia src/script2vacc.jl --db "source-sink.db" -m sourcesink$(model) -b 30
-
-run_vacc_scripts:
-	for file in $$(ls sourcesink$(model)_output/vacc_script/*.sh); do sbatch $$file; done;
-
-process_raw_data_coevo:
-	sbatch --mem 60G --partition short --nodes 1 \
-		   --ntasks=20 --time 02:59:59 \
-		   --job-name=processing .run_processing.sh sourcesink$(model)_output
-
-
+BETA=0.07
+XI=1.
+ALPHA=0.5
+GAMMA=1.
+RHO=0.1
+ETA=0.1
+B=0.18
+COST=1.05
+MU=1e-4
+single-run-coevo: 
+	mkdir -p tmp/
+	julia --project=@. src/InstitutionalDynamics.jl/src/sourcesink2.jl --beta $(BETA) --xi $(XI) -a $(ALPHA) -g $(GAMMA) -r $(RHO) -e $(ETA) -b $(B) -c $(COST) -m $(MU)
+	mv sourcesink2_* tmp/
+	julia --project=@. src/processing.jl -i tmp/ -o docs/data/single_run
+	rm -rf tmp/
 
 ################################
 #                              #

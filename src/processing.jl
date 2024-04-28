@@ -1,4 +1,4 @@
-# using Pkg; Pkg.activate(".");
+using Pkg; Pkg.activate(".");
 using DataFrames, CSV, ProgressMeter, ArgParse, Parquet
 using Pipe: @pipe
 using Parquet2: writefile
@@ -47,8 +47,8 @@ function main()
   tot_rows = 0
   dfs = []
   p = ProgressMeter.Progress(length(fnames))
-  # @showprogress for i=eachindex(fnames)
-  Threads.@threads for i=eachindex(fnames)
+  @showprogress for i=eachindex(fnames)
+  # Threads.@threads for i=eachindex(fnames)
     fname = fnames[i]
 
     p_str = @pipe split(fname, "/")[end] |> 
@@ -61,6 +61,7 @@ function main()
 
     gd = groupby(sol, [:timestep, :L])
     n = nrow(gd[1])
+    
   
     # process functions
     df_agg = combine(gd, :value => (x -> round(sum(x), digits=7)) => :value_prop, 
@@ -109,16 +110,10 @@ function main()
 
   println("Writing data to disk")
   
-  if args.csv
-    CSV.write(stdout, all_dfs)
-  else
-    # write lookup file
-    output="results"
-    
-    write_parquet(joinpath(args["output"], lookup_f), (row_id=row_ids, param_str=names_params))
-    # write data file
-    write_parquet(joinpath(output, out_f), all_dfs)
-  end
+  # write lookup file
+  write_parquet(joinpath(args["output"], lookup_f), (row_id=row_ids, param_str=names_params))
+  # write data file
+  write_parquet(joinpath(args["output"], out_f), all_dfs)
 end
 
 main()

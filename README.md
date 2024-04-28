@@ -1,39 +1,43 @@
-
 # Welcome
-_"Interfacing the physics of higher-order dynamics with social ontology". This is our big quest._
+_We study how group-based models impact how we think about all sorts of contagion._
+
+This is an experimental project that seek to combine group-based modeling and interactive visualization under the same roof.  
 
 ## Project structure
 
-We take as starting point the observable framework structure, but modify it a little to accomodate our data processing pipeline. That is, on top of the Framework project that mostly lives in `docs/` (see hidden summary below for authors' description), we have a project structure heavily inspired from the [Turing Way's repository structure](https://book.the-turing-way.org/project-design/project-repo/project-repo-advanced#example-with-every-possible-folder):
+We take as starting point the [Observable Framework](https://observablehq.com/framework/project-structure) structure, but modify it a little to accomodate our simulation work. That is, on top of the Observable Framework project that mostly lives in `docs/` (see hidden summary below for authors' description), we have a project structure heavily inspired from the [Turing Way's repository structure](https://book.the-turing-way.org/project-design/project-repo/project-repo-advanced#example-with-every-possible-folder):
 
 ```ini
 .
 ├─ data # Observable framework app
-│  ├─ clean       # processed file
-│  │  └─ train/test/validation
-│  └─ raw       
-├─ docs # Observable framework app (see <details>)
+│  └─ raw       # import/raw data
+│     ├── input_file_1.parquet
+│     └─ input_file_2.parquet # file that is coming from excel sheet
+├─ docs # Observable framework app
 ├─ src
-|  ├─ moving_annots # scripts to move around anots
-│  │  ├─ catDB_to_BBA.py
-│  │  ├─ ...
-│  │  └─ cNER_to_cSFT.py
-│  ├─ kfold_split.py 
-│  ├─ prepare_fpNER_annots.py 
-│  └─ helpers.py  # helpers shared across scripts
-├─ static  # static resources (images and audio files)
-├─ Makefile # A makefile to run the pipeline
-├── report/   # static analysis
-│   └── report.tex
+│  ├─ InstitutionalDynamics.jl # gitsubmodules
+│  ├─ processing.jl 
+│  ├─ script-2-vacc.jl 
+│  └─ source-sink-db.jl 
+├─ .gitignore
+├─ static # static resources (images and audio files)
+├─ Makefile # A makefile to run the pipelind
+├─ observablehq.config.js  # Observable Framework project config file
+├─ package.json
+├── results/   # static analysis
+│   ├── result1.txt 
+│   └── result2.txt
 ├─ README.md
 └─ reqirements.txt
 ```
 
+Our simulation code lives in `src/`. We have a subfolder called `RSB_submission` to play with code we written for our paper submitted to the _Royal Society B_. We output our simulation results in `results/`, which are then used by the app data loaders. We use the [Julia programming language](https://julialang.org/) as our backend. At the root-directory level, we have `Manifest.toml` and `Project.toml` to specify the environment to run the simulation.
 
 <details><summary>How to get started with Observable Framework</summary>
 
+## 
 
-This is an [Observable Framework](https://observablehq.com/framework) project. To start the local preview server, run:
+This is (also) an [Observable Framework](https://observablehq.com/framework) project. To start the local preview server, run:
 
 ```
 npm run dev
@@ -43,7 +47,7 @@ Then visit <http://localhost:3000> to preview your project.
 
 For more, see <https://observablehq.com/framework/getting-started>.
 
-## Project structure
+#### Project structure
 
 A typical Framework project looks like this:
 
@@ -74,7 +78,7 @@ A typical Framework project looks like this:
 
 **`observablehq.config.js`** - This is the [project configuration](https://observablehq.com/framework/config) file, such as the pages and sections in the sidebar navigation, and the project’s title.
 
-## Command reference
+#### Command reference
 
 | Command           | Description                                              |
 | ----------------- | -------------------------------------------------------- |
@@ -85,4 +89,41 @@ A typical Framework project looks like this:
 | `npm run clean`      | Clear the local data loader cache                        |
 | `npm run observable` | Run commands like `observable help`                      |
 
+##
+
 </details>
+
+<br>
+
+## Running single runs
+
+In our dashboard, we cache the results from parameter sweeps. If you are interested in a particular set of parameters, you need to 
+
+```
+# clone and init InstitutionalDynamics.jl git submodules
+git clone --recurse-submodules https://github.com/jstonge/hello-gmes.git
+cd ./hello-gmes
+# run single run with make, e.g.
+make single-run-coevo BETA=0.16 RHO=0.05 ETA=0.26 XI=1 ALPHA=1. GAMMA=1 B=0.2 C=0.5
+npm run dev
+```
+
+When the app is up and running, you can try other other parameters values as well. 
+
+Make sure you have installed `julia=1.8`.
+
+## Group-based modeling
+
+In this collection of notebooks, we examine how array of institutional responses arises from group dynamics.
+
+#### 1. Replicating Hébert-Dufresne et al. 2022
+
+A group-based approach to model behavior and institution co-evolution
+
+#### 2. Call for action
+
+TO WRITE
+
+---
+
+
