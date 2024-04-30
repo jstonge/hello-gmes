@@ -88,10 +88,10 @@ Consider the following
 <img src="quadrant.png" alt="quadrant" style="width:60%">
 
 
-- The upper left quadrant represents the time evolution of the average number of people infected by institutionlevel. The dotted line is the global average, here converging to about 41% of people being infected.
-- The upper right quadrant is the proportion of institutions of that strength. We see that 43.6% of institutionsconverged onto level two. Institutions weren't willing to pay the cost and invest stronger institutions than level4 in this case.
-- The bottom left figure is basically the same plot than upper right, but this is a phase diagram to know howinstitutional proportional change as a function of relevant parameters in the model, here rho and beta. We can seethe phenomenon of what we call **parameter localization**, where some institutional regimes take over part of theparameter space.
-- Finally, bottom right figure is the equivalent for the upper left figure, i.e. the global average of infectedpeople over all regimes. This figure let us see how did the institutions perform for any combination of theparameter on the axes.
+- The upper left quadrant represents the time evolution of the average number of people infected by institution level. The dotted line is the global average, here converging to about 41% of people being infected.
+- The upper right quadrant is the proportion of institutions of each strength. We see that at equilibrium most groups (about 44%) choose level ${tex`\ell=2`. Only a minority of groups adopts stronger policies (i.e., ${tex`\ell=3,4`).
+- The bottom left figure represents, via heatmaps, the proportion of institutions of each level at equilibrium. In this case we fixed ${tex`\eta` and varied ${tex`beta_0` (x axis) and ${tex`rho` (y axis). These heatmaps allow us to visualize the phenomenon we call **institutional localization**, where some regions of the parameter space are dominated by a spceific institutional level.
+- Finally, the bottom right figure represents the global prevalence at equilibrium against two parameters (here again ${tex`beta_0` and ${tex`rho`).
 
 ## Extra plots
 
