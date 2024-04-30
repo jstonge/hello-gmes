@@ -42,7 +42,7 @@ import { get_param_table, global_hm, get_data_heatmap, f, minmax, s } from "./co
 
 ## Decomposing the call for action
 
-Reducing the copying rate enough, we observe the prevalence curve becoming non-monotonic, with multiple local minima. As we increase ${tex`\beta_0`} (or ${tex`\rho`}, when enough above the epidemic threshold), however, stronger institutions prove their ability to control the contagion, being increasingly selected.
+Reducing the copying rate enough, we observe the prevalence curve becoming non-monotonic, with multiple local minima. Weakest institutions (${tex`\ell = 1`) dominate the fitness landscape in regimes of low ${tex`\beta_0`} (or low ${tex`\rho`}), for stronger policies are not selected in the presence of few infections. As we increase ${tex`\beta_0`} (or ${tex`\rho`}, when enough above the epidemic threshold), however, stronger institutions prove their ability to control the contagion, being increasingly selected. This eventually results in the presence of local minima in the overall prevalence.
 
 <div>
   <div>
