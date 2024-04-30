@@ -1,11 +1,46 @@
 # Welcome
 _We study how group-based models impact how we think about all sorts of contagion._
 
-This is an experimental project that seek to combine group-based modeling and interactive visualization under the same roof.  
+This is an experimental project that seek to combine group-based modeling and interactive visualization under the same roof. If you want a friendly book to better understand group-based, or approximate, master equations, [start here](https://cosmo-notes.github.io/tame/chapters/index.html).
+
+## Usage
+
+You have three ways to interact with our project:
+
+- `Online`: a dashboard lives [here](https://joint-lab.observablehq.cloud/hello-gmes/). You can explore the parameters sweep that we have precomputed.
+- `Make`: follow the installation steps, then you should be able to do single runs using `make` (see installation below).
+- `Code`: see [this repo](https://github.com/jstonge/InstitutionalDynamics.jl) or this [example folder](src/examples).
 
 ## Installation
 
-If you just want to run the julia code for our different models, see [this repo](https://github.com/jstonge/InstitutionalDynamics.jl). We also keep code examples for various projects in our [example folder](src/examples).
+If you are interested in a particular set of parameters without writing code, you need to do the following
+
+```zsh
+# clone and init InstitutionalDynamics.jl git submodules
+git clone --recurse-submodules https://github.com/jstonge/hello-gmes.git
+cd ./hello-gmes
+```
+
+Now that we have cloned the repo and are in root dir, we install `Julia` dependencies
+
+```zsh
+julia
+julia> ]
+(@v1.10) pkg> activate .
+(hello-GMEs) pkg> instantiate
+# ctrl+d to quit
+```
+
+Right now the libs are compiled for `Julia 1.10` and higher. Once done, we can run the single-run with `make`, and launch the app. The run will show up in the `single-run/` page once finished running:
+
+```zsh
+# run single run with make, e.g.
+make single-run-coevo BETA=0.16 RHO=0.05 ETA=0.26 XI=1 ALPHA=1. GAMMA=1 B=0.2 C=0.5
+# install observable app
+npm install
+# launch the app
+npm run dev
+```
 
 ## Project structure
 
@@ -99,43 +134,10 @@ A typical Framework project looks like this:
 
 <br>
 
-## Running single runs
-
-In our dashboard, we cache the results from parameter sweeps. If you are interested in a particular set of parameters, you need to 
-
-```zsh
-# clone and init InstitutionalDynamics.jl git submodules
-git clone --recurse-submodules https://github.com/jstonge/hello-gmes.git
-cd ./hello-gmes
-```
-
-Now that we have cloned the repo and are in root dir, we install `Julia` dependencies
-
-```zsh
-julia
-julia> ]
-(@v1.10) pkg> activate .
-(hello-GMEs) pkg> instantiate
-# ctrl+d to quit
-```
-
-Right now the libs are compiled for `Julia 1.10` and higher. Once done, we can run the single-run with `make`, and launch the app. The run will show up in the `single-run/` page once finished running:
-
-```zsh
-# run single run with make, e.g.
-make single-run-coevo BETA=0.16 RHO=0.05 ETA=0.26 XI=1 ALPHA=1. GAMMA=1 B=0.2 C=0.5
-# install observable app
-npm install
-# launch the app
-npm run dev
-```
-
-When the app is up and running, you can try other other parameters values as well. 
-
 
 ## Group-based modeling
 
-In this collection of notebooks, we examine how array of institutional responses arises from group dynamics.
+Here we describe the goals of our different interactive visualizations.
 
 #### 1. Replicating Hébert-Dufresne et al. 2022
 
@@ -144,7 +146,3 @@ A group-based approach to model behavior and institution co-evolution
 #### 2. Call for action
 
 TO WRITE
-
----
-
-
