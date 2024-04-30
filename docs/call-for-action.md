@@ -23,7 +23,7 @@ import { get_param_table, global_hm, get_data_heatmap, f, minmax, s } from "./co
 <div>
   <div class="card">
     <div class="grid grid-cols-3">
-      <div>${radioInput}<br><br><br><i>Note: μ is fixed at 0.0001 </i></div>
+      <div>Control the axis of the phase diagrams:<br><br>${radioInput}<br><br><i>Note: μ is fixed at 0.0001 </i></div>
       <div>${ax_formInput}</div>
       <div>${fp_formInput}</div>
     </div>
@@ -38,9 +38,11 @@ import { get_param_table, global_hm, get_data_heatmap, f, minmax, s } from "./co
   </div>
 </div>
 
-_p.s. if the range input is disabled or a parameter is missing, is that we didn't run the parameter sweep with this set of values_
+<div class="warning" label="⚠️ Warning">The visualization may give slightly different results than our paper. To keep the visualization lightweight, we sparsified the raw output with  <a href="https://github.com/jstonge/hello-gmes/blob/main/.sparsify.py#L5-L9">.sparsify.py#L5-L9</a>. In the highlighted lines, we throw away points where the absolute difference between two time steps is greater than 0.0001. This lead to premature termination of runs and more rough results. That said, the results should be  qualitatively the same in the paper. If not, please let us know. Also, in the paper we use different initial conditions to demonstrate different mechanisms, which we didn't reproduce here. Finally, note that if the range input is disabled or a parameter is missing, is that we didn't run the parameter sweep with this set of values</div>
 
 ## Decomposing the call for action
+
+Reducing the copying rate enough, we observe the prevalence curve becoming non-monotonic, with multiple local minima. As we increase ${tex`\beta_0`} (or ${tex`\rho`}, when enough above the epidemic threshold), however, stronger institutions prove their ability to control the contagion, being increasingly selected.
 
 <div>
   <div>
