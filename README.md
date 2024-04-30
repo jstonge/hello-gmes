@@ -3,6 +3,10 @@ _We study how group-based models impact how we think about all sorts of contagio
 
 This is an experimental project that seek to combine group-based modeling and interactive visualization under the same roof.  
 
+## Installation
+
+If you just want to run the julia code for our different models, see [this repo](https://github.com/jstonge/InstitutionalDynamics.jl). We also keep code examples for various projects in our [example folder](src/examples).
+
 ## Project structure
 
 We take as starting point the [Observable Framework](https://observablehq.com/framework/project-structure) structure, but modify it a little to accomodate our simulation work. That is, on top of the Observable Framework project that mostly lives in `docs/` (see hidden summary below for authors' description), we have a project structure heavily inspired from the [Turing Way's repository structure](https://book.the-turing-way.org/project-design/project-repo/project-repo-advanced#example-with-every-possible-folder):
