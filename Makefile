@@ -14,7 +14,7 @@ SCRIPT_DIR=./src
 #                        #
 ##########################
 
-.PHONY: single-run-source-sink
+.PHONY: single-run-source-sink single-run-coevo
 
 BETA=0.07
 ALPHA=0.5
@@ -53,16 +53,16 @@ single-run-coevo:
 ################################
 
 # Repducing the Paradoxes in the co-evolution of contagions and institutions results
-.PHONY: coevo
+.PHONY: run-sim
 
 # Note can these results can only be run on the UVM cluster. 
-coevo: populate_param_db get_vacc_scripts run_vacc_scripts process_raw_data_coevo
+run-sim: populate_param_db get_vacc_scripts run_vacc_scripts process_raw_data_coevo sparsify
 
 populate_param_db:
 	julia $(SCRIPT_DIR)/source-sink-db.jl -m $(model)
 
 get_vacc_scripts:
-	julia src/script2vacc.jl --db "source-sink.db" -m sourcesink$(model) -b 30
+	julia src/script-2-vacc.jl --db "source-sink.db" -m sourcesink$(model) -b 30
 
 run_vacc_scripts:
 	for file in $$(ls sourcesink$(model)_output/vacc_script/*.sh); do sbatch $$file; done;
@@ -72,9 +72,13 @@ process_raw_data_coevo:
 		   --ntasks=20 --time 02:59:59 \
 		   --job-name=processing .run_processing.sh sourcesink$(model)_output
 
+sparsify:
+	python .sparsify.py sourcesink$(model)_output
+
+# Run parts of all the .sh files
 # for i in {1..508}; do sbatch sourcesink2_output/vacc_script/combine_folder_$i.sh; done;
-# for i in {508..1016}; do sbatch sourcesink2_output/vacc_script/combine_folder_$i.sh; done;
 # sh .check_nodes.sh
+# for i in {508..1016}; do sbatch sourcesink2_output/vacc_script/combine_folder_$i.sh; done;
 
 #########################
 #                       #
@@ -82,13 +86,14 @@ process_raw_data_coevo:
 #                       #
 #########################
 
-.PHONY: clean
+.PHONY: clean-obs clean-sims
 
-clean:
+clean-obs:
 	rm -rf docs/.observablehq/cache
 
-# rm -f sourcesink$(model)_output/* || true
-# rm -f sourcesink$(model)_output/vacc_script/* || true
-# rm sourcesink$(model).parquet || true
-# rm sourcesink$(model)_lookup.parquet || true
-# rm -f slurm-* || true
+clean-sims:
+	rm -f sourcesink$(model)_output/* || true
+	rm -f sourcesink$(model)_output/vacc_script/* || true
+	rm sourcesink$(model).parquet || true
+	rm sourcesink$(model)_lookup.parquet || true
+	rm -f slurm-* || true

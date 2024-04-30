@@ -62,7 +62,6 @@ function main()
     gd = groupby(sol, [:timestep, :L])
     n = nrow(gd[1])
     
-  
     # process functions
     df_agg = combine(gd, :value => (x -> round(sum(x), digits=7)) => :value_prop, 
                          :value => (x -> iszero(sum(x)) ? 0.0 : processing1(x,n)) => :value)
@@ -91,7 +90,6 @@ function main()
   names_params = unique(all_dfs.name)
   row_ids = Int32.(1:length(names_params))
 
-  
   # lookup
   println("Converting data to better types")
   lookup_name = Dict()

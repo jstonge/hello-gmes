@@ -1,3 +1,4 @@
+using Pkg; Pkg.activate(".")
 using Distributions, OrdinaryDiffEq, RecursiveArrayTools
 
 function initial_cond(;n::Int=20, L::Int=4, M::Int=1000000, p::Float64=0.0001, lvl_1::Bool=false)

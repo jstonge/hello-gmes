@@ -5,21 +5,13 @@ function parse_commandline()
     s = ArgParseSettings()
   
     @add_arg_table! s begin
-        "-i"
-        "--input"
-        default = "."
-        help = "Directory containing the txt files."
-        "-o"
-        "--output"
-        default = "."
-        help = "Directory containing the txt files."
-        # "--db"
-        # help = "Name of the db containing params"
-        # "-m"
-        # help = "Name of the model to generate scripts"
-        # "-b"
-        # arg_type = Int
-        # help = "Number of runs by batches"
+        "--db"
+        help = "Name of the db containing params"
+        "-m"
+        help = "Name of the model to generate scripts"
+        "-b"
+        arg_type = Int
+        help = "Number of runs by batches"
       end
   
     return parse_args(s)
