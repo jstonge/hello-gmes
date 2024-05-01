@@ -1,22 +1,16 @@
-# This script creates a database that contains all the parameters that we want to run.
-# For each new model, we need to provide a new functions specifying the grid.
-
-using Pkg; Pkg.activate("../../");
+# using Pkg; Pkg.activate("../../");
 using SQLite, ArgParse, DataFrames
 
 function parse_commandline()
   s = ArgParseSettings()
 
   @add_arg_table! s begin
-    "--input", "-i"
-        default = "."
-        help = "Directory containing the txt files."
-    "--output", "-o"
-        default = "."
-        help = "Directory containing the txt files."
-    #   "-m"
-    #   arg_type = Int
-    #   help = "Name of the model to generate scripts"
+      "-m"
+      arg_type = Int
+      help = "Name of the model to generate scripts"
+      "-o"
+      default = "."
+      help = "Name of the model to generate scripts"
     end
 
   return parse_args(s)
@@ -63,8 +57,8 @@ function model3()
 end
 
 function main()
-  global db = SQLite.DB("source-sink.db")
   args = parse_commandline()
+  global db = SQLite.DB(joinpath(args["o"], "source-sink.db"))
   if args["m"] == 1
     model1()
   elseif args["m"] == 2

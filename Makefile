@@ -6,7 +6,9 @@ FRAMEWORK_DIR=$(realpath ./docs)
 DATA_DIR_OBS=$(FRAMEWORK_DIR)/data
 
 SCRIPT_DIR=./src
-
+INST_DYNAMIC_DIR=$(SCRIPT_DIR)/InstitutionalDynamics.jl
+RESULT_DIR=$(realpath ./results)
+PROCESSED_DIR=$(RESULT_DIR)/processed
 
 ##########################
 #                        #
@@ -53,27 +55,35 @@ single-run-coevo:
 ################################
 
 # Repducing the Paradoxes in the co-evolution of contagions and institutions results
-.PHONY: run-sim
+.PHONY: run-coevo-sim
 
 # Note can these results can only be run on the UVM cluster. 
-run-sim: populate_param_db get_vacc_scripts run_vacc_scripts process_raw_data_coevo sparsify
+run-coevo-sim: populate_param_db vacc_scripts run_vacc_scripts process_raw_data_coevo sparsify
 
+# We first create a sqlite database containing all the parameter combinations
 populate_param_db:
-	julia $(SCRIPT_DIR)/source-sink-db.jl -m $(model)
+	julia --project=@. $(SCRIPT_DIR)/source-sink-db.jl -m 2 -o $(RESULT_DIR)
 
-get_vacc_scripts:
-	julia src/script-2-vacc.jl --db "source-sink.db" -m sourcesink$(model) -b 30
+# We have a helper scripts that turn the parameter combinations into many slurms scripts
+# that can be run in parallel. It has been hardcoded so that we do about 30 lines of parameters
+# for each node.
+vacc_scripts:
+	julia --project=@. $(SCRIPT_DIR)/script-2-vacc.jl -i $(RESULT_DIR) -m sourcesink2 -b 30 -o $(RESULT_DIR)
 
+# We send all those files to the server. We need to be careful as the VACC don't like >1000 files at a time.
 run_vacc_scripts:
-	for file in $$(ls sourcesink$(model)_output/vacc_script/*.sh); do sbatch $$file; done;
+	for file in $$(ls $(RESULT_DIR)/sourcesink2_output/vacc_script/*.sh); do sbatch $$file; done;
 
+# We postprocess the data a first time. We are rounding up to 7 digits, and aggregate all the 
+# runs into a single file.
 process_raw_data_coevo:
 	sbatch --mem 60G --partition short --nodes 1 \
 		   --ntasks=20 --time 02:59:59 \
-		   --job-name=processing .run_processing.sh sourcesink$(model)_output
+		   --job-name=processing .run_processing.sh $(RESULT_DIR)/sourcesink2_output/ $(PROCESSED_DIR)/
 
+# Sometimes the data is too big, so we remove all the values where the diff between t and t+1 > 1e-4.
 sparsify:
-	python .sparsify.py sourcesink$(model)_output
+	python .sparsify.py sourcesink2_output
 
 # Run parts of all the .sh files
 # for i in {1..508}; do sbatch sourcesink2_output/vacc_script/combine_folder_$i.sh; done;
