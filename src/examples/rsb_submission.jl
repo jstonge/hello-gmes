@@ -7,6 +7,14 @@ using Plots
 # help?> dynamics!
 include("../InstitutionalDynamics.jl/src/sourcesink2.jl")
 
+"""
+  parse_sol(s)
+  ============
+  
+  Return two dictionaries with level as keys with; (i) prevalence of 
+  infected people in that level and (ii) the proportion of institution
+  of that level as values.
+"""
 function parse_sol(s::ODESolution)
     L = length(s.u[1].x)
     tmax = length(s)
@@ -17,7 +25,7 @@ function parse_sol(s::ODESolution)
       values_prop = []
       for t = 1:tmax
         n = length(s.u[t].x[ℓ])
-        x = s.u[t].x[ℓ]
+        x = s.u[t].x[ℓ] # distribution of group states at that level 
         out = sum((collect(0:(n-1)) / (n-1)) .* x) / sum(x) 
         push!(values_prev, out)
         out = sum(x)

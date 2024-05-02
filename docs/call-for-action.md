@@ -9,7 +9,7 @@ sql:
 ---
 
 # Paradoxes in the co-evolution of contagions and institutions
-## Exploring the co-evolutionary dynamics between epidemic spreading and institutional adaptation [(J. St-Onge, G. Burgio, _et al_, 2024)](https://arxiv.org/abs/2310.03672).
+## Exploring the co-evolutionary dynamics between epidemic spreading and institutional adaptation ([J. St-Onge, G. Burgio, _et al_, 2024](https://arxiv.org/abs/2310.03672)).
 
 <!-- DASHBOARD 1 -->
 
@@ -42,7 +42,7 @@ import { get_param_table, global_hm, get_data_heatmap, f, minmax, s } from "./co
 
 ## Decomposing the call for action
 
-Reducing the copying rate enough, we observe the prevalence curve becoming non-monotonic, with multiple local minima. Weakest institutions (${tex`\ell = 1`) dominate the fitness landscape in regimes of low ${tex`\beta_0`} (or low ${tex`\rho`}), for stronger policies are not selected in the presence of few infections. As we increase ${tex`\beta_0`} (or ${tex`\rho`}, when enough above the epidemic threshold), however, stronger institutions prove their ability to control the contagion, being increasingly selected. This eventually results in the presence of local minima in the overall prevalence.
+Reducing the copying rate enough, we observe the prevalence curve becoming non-monotonic, with multiple local minima. As we increase ${tex`\beta_0`} (or ${tex`\rho`}, when enough above the epidemic threshold), stronger institutions prove their ability to control the contagion, being increasingly selected.
 
 <div>
   <div>
@@ -66,16 +66,24 @@ Reducing the copying rate enough, we observe the prevalence curve becoming non-m
               title: d => `η = 0.005`, 
               tip: true 
             }),
+            Plot.text(global_hm(data_hm2b).filter(d => d.param2 == 0.005), Plot.selectLast({
+              x: "param1", y: "value", sort: "param1", text:d=>`η = ${d.param2}`,
+              textAnchor: "start", dx: -15, dy: -10, 
+            })),
             Plot.lineY(global_hm(data_hm2b).filter(d => d.param2 == 0.05), { 
               x: "param1", y: "value", sort: "param1", stroke: "blue", 
               title: d => `η = 0.05`, tip: true 
             }),
+            Plot.text(global_hm(data_hm2b).filter(d => d.param2 == 0.05), Plot.selectLast({
+              x: "param1", y: "value", sort: "param1", text:d=>`η = ${d.param2}`,
+              textAnchor: "start", dx: -15, dy: -10
+            })),
             Plot.frame()
           ]
         }))
       }</div>
-      <div>${resize((width) => extra1(0.005, "purples", { width }))}</div>
-      <div>${resize((width) => extra1(0.05, "blues", { width }))}</div>
+      <div>${resize((width) => call4action(0.005, "purples", { width }))}</div>
+      <div>${resize((width) => call4action(0.05, "blues", { width }))}</div>
     </div>
   </div>
   <br>
@@ -85,88 +93,16 @@ Reducing the copying rate enough, we observe the prevalence curve becoming non-m
 
 Consider the following
 
-<img src="quadrant.png" alt="quadrant" style="width:60%">
+<img src="quadrant.png" alt="quadrant" style="width:70%">
 
 
 - The upper left quadrant represents the time evolution of the average number of people infected by institution level. The dotted line is the global average, here converging to about 41% of people being infected.
-- The upper right quadrant is the proportion of institutions of each strength. We see that at equilibrium most groups (about 44%) choose level ${tex`\ell=2`. Only a minority of groups adopts stronger policies (i.e., ${tex`\ell=3,4`).
-- The bottom left figure represents, via heatmaps, the proportion of institutions of each level at equilibrium. In this case we fixed ${tex`\eta` and varied ${tex`beta_0` (x axis) and ${tex`rho` (y axis). These heatmaps allow us to visualize the phenomenon we call **institutional localization**, where some regions of the parameter space are dominated by a spceific institutional level.
-- Finally, the bottom right figure represents the global prevalence at equilibrium against two parameters (here again ${tex`beta_0` and ${tex`rho`).
-
-## Extra plots
-
-<div>
-  <div class="grid grid-cols-3">
-    <div class="grid-colspan-1">
-      <br><br>
-      ${ax3_formInput} ${fp3_formInput}
-    </div>
-    <div class="grid-colspan-2" style="max-width: 600px;">${
-        resize((width) =>  Plot.plot({
-          height: 350,
-          width,
-          color: { type: "ordinal", scheme: "greys", range: [0.4, 1]},
-          marginBottom: 35,
-          marginLeft: 50,
-          marks: [
-            Plot.ruleY([0]),
-            Plot.axisY({ labelAnchor: "center", label: "equilibrium prevalence", tickSpacing: 80, labelArrow: "none" }),
-            Plot.axisX({ labelAnchor: "center", label: "η", tickSpacing: 80, labelArrow: "none" }),
-            Plot.lineY(data_hm2c.filter(d => d.param1 == ax3_form['ax0']), {
-              x: "param2", y: "value", sort: "param2", stroke: "L", 
-              tip: true 
-            }),
-            Plot.lineY(global_hm(data_hm2c).filter(d => d.param1 == ax3_form['ax0']), {
-              x: "param2", y: "value", sort: "param2", stroke: "black", 
-              strokeDasharray: "5,3"
-            }),
-            Plot.frame()
-          ]
-        }))}
-    </div>
-  </div>
-  
-## where are the regimes
-
-By focusing on the averages of average performance, we can see the potential regimes:
-
-<!-- gold: 0.07_1.0_1.0_1.0_0.005_0.38_1.0_1.5_0.0001 -->
-<!-- purple: 0.055_1.0_1.0_1.0_0.065_0.035_1.0_1.5_0.0001  -->
-<!-- forestgreen: 0.055_1.0_1.0_1.0_0.005_0.41_1.0_0.5_0.0001 -->
-
-<div>
-    <div>${
-      Plot.legend({color: {
-        domain: ["low transmission\nbut high imitation rate", 
-                "high transmission\nbut low imitation rate",
-                "high transmission\nbut high imitation rate"],
-                range: ["gold", "purple", "forestgreen"]}}
-      )
-    }</div>
-    <div style="max-width: 700px;">${
-    resize((width) =>  Plot.plot({
-        width, 
-        height: 400, x: {type:"log"}, y: {label: "% infected", percent: true, grid: true}, 
-        marks: [
-          Plot.lineY(d1a, {
-            x: d => d[0], y: d => d[1], strokeDasharray: "5,3", opacity: 1., stroke: "gold"
-            }),
-          Plot.lineY(d3.flatRollup(d2, v => d3.sum(v, d => d.value * d.value_prop), d => d.timestep), {
-            x: d => d[0], y: d => d[1], strokeDasharray: "5,3", opacity: 1., stroke: "purple"
-            }),
-          Plot.lineY(d3.flatRollup(d4, v => d3.sum(v, d => d.value * d.value_prop), d => d.timestep), {
-            x: d => d[0], y: d => d[1], strokeDasharray: "5,3", opacity: 1., stroke: "forestgreen"
-            }),
-          Plot.frame()
-        ]
-      }))}
-    </div>
-  </div>
-<div>
-
+- The upper right quadrant is the proportion of institutions of that strength. We see that 43.6% of institutions converged onto level two. Institutions weren't willing to pay the cost and invest stronger institutions than level4 in this case.
+- The bottom left figure is basically the same plot than upper right, but this is a phase diagram to know how institutional proportional change as a function of relevant parameters in the model, here rho and beta. We can see the phenomenon of what we call **parameter localization**, where some institutional regimes take over part of the parameter space.
+- Finally, bottom right figure is the equivalent for the upper left figure, i.e. the global average of infectedpeople over all regimes. This figure let us see how did the institutions perform for any combination of theparameter on the axes.
 
 ```js
-function extra1(eta, scheme, {width = {}}) {
+function call4action(eta, scheme, {width = {}}) {
   return Plot.plot({
   height: 275,
   width,
@@ -184,7 +120,8 @@ function extra1(eta, scheme, {width = {}}) {
       x: "param1", y: "value", sort: "param1", stroke: "black", 
       strokeDasharray: "5,3"
     }),
-    Plot.frame()
+    Plot.frame(),
+    Plot.text([`η = ${eta}`], {lineWidth: 30, frameAnchor: "middle", dy: -100, fontSize: 15})
   ]
 })
 }
@@ -253,35 +190,8 @@ ORDER BY (s.row_id, s.L)
 // Heatmap-related data
 const data_hm2 = get_data_heatmap(phase_diagram_data, lookup2, fp2, ax_vars2, radio, ax_form, fp_form, fy2)
 const data_hm2b = get_data_heatmap(phase_diagram_data, lookup2, fp2, ax_vars2, radiob, ax2_form, fp2_form, fy2)
-const data_hm2c = get_data_heatmap(phase_diagram_data, lookup2, fp2, ax_vars2, radioc, ax3_form, fp3_form, fy2)
 ```
 
-<!-- Data for Dashboard 4 -->
-
-```js
-const d1a = d3.flatRollup(d1, v => d3.sum(v, d => d.value * d.value_prop), d => d.timestep)
-```
-
-```sql id=d1
-SELECT timestep::INT as timestep, L::INT as L, value, value_prop
-FROM sourcesink
-WHERE
-row_id = 4219
-```
-
-```sql id=d2
-SELECT timestep::INT as timestep, L::INT as L, value, value_prop
-FROM sourcesink
-WHERE
-row_id = 2219
-```
-
-```sql id=d4
-SELECT timestep::INT as timestep, L::INT as L, value, value_prop
-FROM sourcesink
-WHERE
-row_id = 441
-```
 
 <!-- FORM-RELATED LOGIC -->
 
@@ -343,7 +253,7 @@ const fp2_form = Generators.input(fp2_formInput)
 const radiob = { x: select, y: "η" }
 ```
 
-<!-- DASHBOARD 3 & 4 -->
+<!-- DASHBOARD Call for action -->
 
 ```js
 const ax3_formInput = Inputs.form({
@@ -367,6 +277,7 @@ const fp3_form = Generators.input(fp3_formInput)
 ```js
 const radioc = {x:"β", y: "η"}
 ```
+
 
 
 

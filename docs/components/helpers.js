@@ -73,14 +73,14 @@ function get_data_heatmap(data, lookup, fp, ax_vars, radios, ax_sliders, fp_slid
 
     if (vs[fp[0]] === fp_sliders['fp0'] && vs[fp[1]] === fp_sliders['fp1'] && vs[fp[2]] === fp_sliders['fp2'] && vs[fp[3]] == fp_sliders['fp3'] && vs[fp[4]] == fp_sliders['fp4']) {
 
-        // if ax1 == x && ax2 ==y, then ax0 == z
-        if (radios['x'] == ax1 && radios['y'] == ax2 && vs[ax0] == ax_sliders['ax0']) {
-             dat_hm.push(hm_vals_i)
-        } else if (radios['x'] == ax0 && radios['y'] == ax2 && vs[ax1] == ax_sliders['ax1']) {
-             dat_hm.push(hm_vals_i)
-        } else if (radios['x'] == ax0 && radios['y'] == ax1 && vs[ax2] == ax_sliders['ax2']) {
-             dat_hm.push(hm_vals_i)
-        }
+      // if ax1 == x && ax2 ==y, then ax0 == z
+      if (radios['x'] == ax1 && radios['y'] == ax2 && vs[ax0] == ax_sliders['ax0']) {
+           dat_hm.push(hm_vals_i)
+      } else if (radios['x'] == ax0 && radios['y'] == ax2 && vs[ax1] == ax_sliders['ax1']) {
+           dat_hm.push(hm_vals_i)
+      } else if (radios['x'] == ax0 && radios['y'] == ax1 && vs[ax2] == ax_sliders['ax2']) {
+           dat_hm.push(hm_vals_i)
+      }
     }
   }
   return dat_hm
