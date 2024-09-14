@@ -1,0 +1,3 @@
+[submodule "analysis/InstitutionalDynamics.jl"]
+	path = analysis/InstitutionalDynamics.jl
+	url = https://github.com/jstonge/InstitutionalDynamics.jl.git
