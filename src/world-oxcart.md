@@ -7,13 +7,15 @@ sql:
 ---
 
 # OxGRT - National level
+## Infection - Policies coevolution
 
+In the default plot, the color represents the rate of changes of policies in response to COVID-19. 
 
 ```js
 const selectInput_c = Inputs.select(filteredData.map(d=>d.CountryName), {multiple: 30, value: ["Canada", "Germany", "United Kingdom", "Denmark"]});
 const select_c = Generators.input(selectInput_c);
 
-const kInput = Inputs.range([1,60], {label: "window size", value: 7, step: 1});
+const kInput = Inputs.range([2,60], {label: "window size", value: 7, step: 1});
 const k = Generators.input(kInput)
 
 const islogInput = Inputs.toggle({label: "log yaxis", value: true})
@@ -39,11 +41,6 @@ const phase_space = Generators.input(phase_spaceInut)
     </div>
 </div>
 
-<div class="card  grid grid-cols-2">
-    <div>
-        ${resize((width) => avg_policy_plot(timeseries, {width}))}
-    </div>
-</div>
 
 Here's what the world look like, on a given and chosen policy type:
 
@@ -162,30 +159,6 @@ function weekly_infected_plot(data, {width} = {}) {
                     Plot.ruleX([new Date(time)], {stroke: "red"}),
                 ]
             })
-
-}
-```
-
-```js
-function avg_policy_plot(data, {width} = {}) {
-
-    const ts = data.filter(d => select_c.includes(d.CountryName))
-    return Plot.plot({
-            height: 300,
-            width,
-            grid:true,
-            x: {type: "utc"},
-            color: {legend:true},
-            marks: [
-                Plot.lineY(
-                    ts, 
-                    Plot.windowY(
-                        { k: 1,  reduce: "sum" }, 
-                        { x: "Date", y: "AvgPolicyValue", stroke:"CountryName", tip: true })
-                        ),
-                Plot.ruleX([new Date(time)], {stroke: "red"}),
-            ]
-        })
 
 }
 ```
