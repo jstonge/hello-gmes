@@ -21,9 +21,13 @@ const select_cont = Generators.input(select_contInput)
 const world_regions = filterByRegion(filteredData, select_cont);
 ```
 
-```js
-// All the widgets!
+<!-- check name mismatch -->
+<!-- ```sql
+-- SELECT * FROM metadata WHERE starts_with(country, 'Cz')
+-- SELECT * FROM data WHERE starts_with(CountryName, 'Cz')
+``` -->
 
+```js
 // Choose country
 const selectInput_c = Inputs.select(world_regions, {multiple: 30, value: ["Canada", "Germany", "United Kingdom", "Japan", "Kenya", "Brazil", "New Zealand"]});
 const select_c = Generators.input(selectInput_c);
@@ -56,7 +60,7 @@ const phase_space = Generators.input(phase_spaceInput)
         <br>
         ${selectInput_c}
     </div>
-    <div class="card grid-colspan-3">
+    <div class="grid-colspan-3">
         ${resize((width) => facet_policy(timeseries, { width }) )}
     </div>
 </div>
@@ -327,7 +331,7 @@ function facet_policy(data, {width} = {}) {
     return {
         inset: 10,
         width,
-        height: 620,
+        height: 700,
         fy: {label: null},
         fx: {padding: 0.03},
         color: {

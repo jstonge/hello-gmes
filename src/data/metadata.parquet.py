@@ -12,6 +12,7 @@ df.columns
 df = df[['date', 'new_cases', 'country', 'weekly_cases_per_million']]
 
 df.country.replace("United States", "United States of America", inplace=True)
+df.country.replace("Czechia", "Czech Republic", inplace=True)
 
 # Write DataFrame to a temporary file-like object
 buf = pa.BufferOutputStream()

@@ -133,6 +133,8 @@ A typical Framework project looks like this:
 
 </details>
 
-<br>
+## In-depth explainer
 
+#### OxCGRT data
 
+![](.static/facet_policy_k30_europe.png)
