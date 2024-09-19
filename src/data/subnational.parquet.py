@@ -8,18 +8,21 @@ import pyarrow.parquet as pq
 # state and national
 df=pd.read_csv("https://raw.githubusercontent.com/OxCGRT/covid-policy-dataset/main/data/OxCGRT_compact_subnational_v1.csv")
 
+df = df[df.CountryName.isin(['United States', 'Canada', 'Australia', 'Brazil', 'United Kingdom'])]
+df = df[df.Jurisdiction == 'STATE_TOTAL']
+
 df = df.loc[:, ~df.columns.str.endswith("Flag")]
 df = df.loc[:, ~df.columns.str.endswith("Notes")]
 
-df = df[df['CountryName'] == 'United States']
+df = df.loc[:, ~df.columns.str.endswith("Flag")]
+df = df.loc[:, ~df.columns.str.endswith("Notes")]
 
-closure_policies = df.columns[df.columns.str.contains("^C\d", regex=True)]
-economic_policies = df.columns[df.columns.str.contains("^E\d", regex=True)]
-health_policies = df.columns[df.columns.str.contains("^H\d", regex=True)]
+closure_policies = df.columns[df.columns.str.contains("^C\d", regex=True)].tolist()
+economic_policies = df.columns[df.columns.str.contains("^E\d", regex=True)].tolist()
+health_policies = df.columns[df.columns.str.contains("^H\d", regex=True)].tolist()
 vaccination_policies = df.columns[df.columns.str.contains("^V\d", regex=True)].tolist()
 
-sel_cols = ['RegionName', 'Date'] + closure_policies.tolist() \
-    + economic_policies.tolist() + health_policies.tolist() + vaccination_policies
+sel_cols = ['CountryName', 'RegionName', 'Date', 'Jurisdiction', 'ConfirmedCases', 'ContainmentHealthIndex_Average'] + closure_policies + economic_policies + health_policies + vaccination_policies
 
 # remove rows with missing region names
 df = df.loc[~df.RegionName.isna(), sel_cols]
@@ -36,9 +39,32 @@ df['V2B_Vaccine.age.eligibility.availability.age.floor..general.population.summa
 df['V2C_Vaccine.age.eligibility.availability.age.floor..at.risk.summary.'] = pd.Categorical(df['V2C_Vaccine.age.eligibility.availability.age.floor..at.risk.summary.'], categories=age_order, ordered=True)
 df['V2C_Vaccine.age.eligibility.availability.age.floor..at.risk.summary.'] = df['V2C_Vaccine.age.eligibility.availability.age.floor..at.risk.summary.'].cat.codes.replace(-1, np.nan)
 
-# wrangle date
 df['Date'] = df.Date.astype(str).map(lambda x: x[:4] + '-' + x[4:6] + '-' + x[6:])
-df['Date'] = pd.to_datetime(df['Date'])
+
+df.CountryName.replace({'United States': 'United States of America'}, inplace=True)
+
+df_long = df.melt(id_vars=['CountryName', 'RegionName', 'Jurisdiction', 'Date', 'ConfirmedCases', 'ContainmentHealthIndex_Average'], var_name='PolicyType', value_name='PolicyValue')
+
+# Write DataFrame to a temporary file-like object
+buf = pa.BufferOutputStream()
+table = pa.Table.from_pandas(df_long)
+pq.write_table(table, buf, compression="snappy")
+
+# Get the buffer as a bytes object
+buf_bytes = buf.getvalue().to_pybytes()
+
+# Write the bytes to standard output
+sys.stdout.buffer.write(buf_bytes)
+
+
+
+
+
+
+
+# wrangle date
+# df['Date'] = df.Date.astype(str).map(lambda x: x[:4] + '-' + x[4:6] + '-' + x[6:])
+# df['Date'] = pd.to_datetime(df['Date'])
 
 
 # 1) Look at how fast and slow each policy for each state change
@@ -48,7 +74,7 @@ df['Date'] = pd.to_datetime(df['Date'])
 #    More days in between changes will result in a smaller SpeedOfChange.
 
 # pivot longer
-df_long = df.melt(id_vars=['RegionName', 'Date'], var_name='PolicyType', value_name='PolicyValue')
+# df_long = df.melt(id_vars=['RegionName', 'Date'], var_name='PolicyType', value_name='PolicyValue')
 
 # # We will also add a column for the previous policy value
 # df_long['PreviousPolicyValue'] = df_long.groupby(['RegionName', 'PolicyType'])['PolicyValue'].shift(1)

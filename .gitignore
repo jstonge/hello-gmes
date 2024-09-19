@@ -9,3 +9,4 @@ etc/netsci2023/netsci2023_files/
 etc/netsci2023/figs/
 analysis/examples/SlowInst_endemic.pdf
 .venv/
+jsconfig.json
