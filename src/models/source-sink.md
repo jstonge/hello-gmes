@@ -1,11 +1,11 @@
 ---
 theme: dashboard
 title: Source Sink
-style: custom-style.css
+style: ../custom-style.css
 toc: false
 sql:
-  sourcesink: ./data/sourcesink1.parquet
-  sourcesink_lookup: ./data/sourcesink1_lookup.parquet
+  sourcesink: ../data/sourcesink1.parquet
+  sourcesink_lookup: ../data/sourcesink1_lookup.parquet
 ---
 
 # A group-based approach to model behavior and institution co-evolution
@@ -14,10 +14,10 @@ sql:
 <!-- DASHBOARD 1 -->
 
 ```js
-import { plot_time_evo } from "./components/time_evo.js";
-import { plot_phase_diagram_facetted } from "./components/phase_diagram_facetted.js";
-import { phase_diagram } from "./components/phase_diagram.js";
-import { get_param_table, global_hm, get_data_heatmap, f, minmax, s } from "./components/helpers.js";
+import { plot_time_evo } from "../components/time_evo.js";
+import { plot_phase_diagram_facetted } from "../components/phase_diagram_facetted.js";
+import { phase_diagram } from "../components/phase_diagram.js";
+import { get_param_table, global_hm, get_data_heatmap, f, minmax, s } from "../components/helpers.js";
 ```
 
 <div>

@@ -1,11 +1,11 @@
 ---
 theme: dashboard
 title: Call-for-action
-style: custom-style.css
+style: ../custom-style.css
 toc: false
 sql:
-  sourcesink: ./data/sourcesink2_simple.parquet
-  sourcesink_lookup: ./data/sourcesink2_lookup.parquet
+  sourcesink: ../data/sourcesink2_simple.parquet
+  sourcesink_lookup: ../data/sourcesink2_lookup.parquet
 ---
 
 # Paradoxes in the co-evolution of contagions and institutions
@@ -14,10 +14,10 @@ sql:
 <!-- DASHBOARD 1 -->
 
 ```js
-import { plot_time_evo } from "./components/time_evo.js";
-import { plot_phase_diagram_facetted } from "./components/phase_diagram_facetted.js";
-import { phase_diagram } from "./components/phase_diagram.js";
-import { get_param_table, global_hm, get_data_heatmap, f, minmax, s } from "./components/helpers.js";
+import { plot_time_evo } from "../components/time_evo.js";
+import { plot_phase_diagram_facetted } from "../components/phase_diagram_facetted.js";
+import { phase_diagram } from "../components/phase_diagram.js";
+import { get_param_table, global_hm, get_data_heatmap, f, minmax, s } from "../components/helpers.js";
 ```
 
 <div>

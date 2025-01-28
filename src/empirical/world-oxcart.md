@@ -2,21 +2,38 @@
 theme: [dashboard, near-midnight]
 toc: false
 sql:
-    data: ./data/subnational.parquet
-    metadata: ./data/metadata.parquet
+    data: ../data/OxCGRT_compact_national_v1.parquet
+    metadata: ../data/metadata.parquet
 ---
 
-# OxGRT - Subnational level
+# OxGRT - National level
 ## Infection - Policies coevolution
 
 In the default plot, the color represents the rate of changes of policies in response to COVID-19. As it gets more blue, more policies are implemented, and the other way around for red. We overlay this color on the number of weekly infection, per million. Increasing the window size `k` will take a difference over longer period of time.
+
+```js
+// Filter countries to select based on world regions
+const select_contInput = Inputs.select([null].concat(['Europe', 'Asia', 'Africa', 'North America', 'South America', 'Oceania']), {label: "Select continent", value: "Europe"})
+const select_cont = Generators.input(select_contInput)
+```
+
+```js
+const world_regions = filterByRegion(filteredData, select_cont);
+```
+
+<!-- check name mismatch -->
+<!-- ```sql
+-- SELECT * FROM metadata WHERE starts_with(country, 'Cz')
+-- SELECT * FROM data WHERE starts_with(CountryName, 'Cz')
+``` -->
+
 ```js
 // Choose country
-const selectInput_c = Inputs.select(new Set(filteredData.map(d=>d.RegionName)), {sort: true, multiple: 5, value: ['Quebec', 'Vermont']});
+const selectInput_c = Inputs.select(world_regions, {multiple: 28, value: ["Canada", "Germany", "United Kingdom", "Japan", "Kenya", "Brazil", "New Zealand"], sort: true});
 const select_c = Generators.input(selectInput_c);
 
 // Choose k window for relative difference in policies
-const kInput = Inputs.range([2,4], {label: "k (weeks)", value: 2, step: 1});
+const kInput = Inputs.range([2,60], {label: "k (weeks)", value: 2, step: 1});
 const k = Generators.input(kInput)
 
 // Log y-axis
@@ -33,7 +50,7 @@ const phase_spaceInput = Inputs.toggle({label: "phase space", value: false})
 const phase_space = Generators.input(phase_spaceInput)
 
 // Type of cases
-const inf_typeInput = Inputs.select(["new_deaths_per_100k","new_cases_per_100k"], {label: "yaxis", step: 1, value: ""})
+const inf_typeInput = Inputs.select(["new_deaths_per_million","new_cases_per_million"], {label: "yaxis", step: 1, value: ""})
 const inf_type = Generators.input(inf_typeInput)
 ```
 
@@ -43,6 +60,7 @@ const inf_type = Generators.input(inf_typeInput)
         ${islogInput}
         ${facetInput}
         ${phase_spaceInput}
+        ${select_contInput}
         ${inf_typeInput}
         <br>
         ${selectInput_c}
@@ -73,9 +91,9 @@ ${resize((width) => weekly_infected_brushplot({width}))}
 </div>
 
 ```js
-const ts0 = timeseries.filter(d => d.RegionName === d3.min(select_c) && new Date(d.Date) > startEndSafe[0] && new Date(d.Date) < startEndSafe[1])
+const ts0 = timeseries.filter(d => d.CountryName === d3.min(select_c) && new Date(d.Date) > startEndSafe[0] && new Date(d.Date) < startEndSafe[1])
 
-const ts1 = timeseries.filter(d => d.RegionName === d3.max(select_c) && new Date(d.Date) > startEndSafe[0] && new Date(d.Date) < startEndSafe[1])
+const ts1 = timeseries.filter(d => d.CountryName === d3.max(select_c) && new Date(d.Date) > startEndSafe[0] && new Date(d.Date) < startEndSafe[1])
 ```
 
 <div class="grid grid-cols-2">
@@ -157,7 +175,7 @@ function Rolling(data) {
         const caseDiff = avgCases[i + window_size] - avgCases[i];
 
         return {
-            RegionName: data[i + window_size - 1].RegionName,  
+            CountryName: data[i + window_size - 1].CountryName,  
             AvgPolicyValue: avgPolicies[i],
             avgCases: avgCases[i],
             dPt: `${avgPolicies[i + window_size]} - ${avgPolicies[i]} (${avgPolicies[i + window_size] - avgPolicies[i]})`,
@@ -194,52 +212,24 @@ const timeInput = Inputs.date({value: "2021-09-21"});
 const time = Generators.input(timeInput);
 ```
 
-<div class="grid grid-cols-3">
-    <div>
-        Choose among policy types
+<div>
+    <div class="grid grid-cols-4">
+        <div class="grid-colspan-1">
         <br>
-        ${selectInput}
-        Then choose a day (you can click on date to toggle with keyboard):
-        ${timeInput}
+            Choose day
+            ${timeInput}
+            Policy type:
+            ${selectInput}
+        </div>
+        <div class="grid-colspan-3">
+            ${resize((width) => weekly_infected_plot(metadata, { width }))}
+        </div>
     </div>
-    <div class="grid-colspan-2">
-            ${resize((width) => Plot.plot({
-                height: 150,
-                width,
-                x: {type: "utc"},
-                y: {label: "weekly new case (total)"},
-                marginLeft: 80,
-                marks: [
-                    Plot.lineY(metadata, Plot.windowY({k: 7}, {x: "date", y: "new_cases"})),
-                    Plot.ruleX([new Date(time)], {stroke: "red"})
-                ]
-        }))}
-    </div>
-</div>
-<div>${resize((width) =>
-Plot.plot({
-        width,
-        height: width / 2.4,
-  projection: "albers-usa",
-  color: {
-    scheme: "YlGnBu", 
-    unknown: "#ccc", 
-    label: "Policy Value", legend: true, 
-    domain: [0, Policy2ValUS.get(select)],
-    range: [0,0.95]
-},
-  marks: [
-     Plot.geo(states, {stroke: "black",
-        fill: (map => d => map.get(d.properties.name))(new Map(filteredData.map(d => [d.RegionName, d.PolicyValue]))),
-        })
-  ]
-})
-)}
+    ${resize((width) => world_map({width}))}
 </div>
 
 
 <br>
-
 
 ```sql id=[...raw_data]
 SELECT PolicyType, MAX(PolicyValue) AS PolicyValue
@@ -257,7 +247,7 @@ GROUP BY PolicyType;
 ```
 
 ```sql id=[...filteredData]
-SELECT CountryName, RegionName, PolicyType, PolicyValue 
+SELECT CountryName, PolicyType, PolicyValue 
 FROM data 
 WHERE 
     PolicyType = ${select}
@@ -266,29 +256,29 @@ WHERE
 
 ```sql id=[...metadata]
 SELECT 
-    MEAN(new_cases_per_100k) as new_cases_per_100k, 
-    MEAN(new_deaths_per_100k) as new_deaths_per_100k, 
+    MEAN(new_cases_per_million) as new_cases_per_million, 
+    MEAN(new_deaths_per_million) as new_deaths_per_million, 
     date, 
-    country,
-    RegionName
+    country
 FROM metadata 
-WHERE Jurisdiction = 'STATE_TOTAL'
-GROUP BY date, country, RegionName
-ORDER BY country, RegionName, date
+WHERE Jurisdiction = 'NAT_TOTAL'
+GROUP BY date, country
+ORDER BY country, date
 ```
+
 
 ```sql id=[...timeseries]
 SELECT 
-    d.RegionName, 
+    d.CountryName, 
     d.Date, 
     COUNT(d.PolicyType)*MEAN(d.PolicyValue) as AvgPolicyValue, 
-    SUM(d.PolicyValue) / MEAN(m.new_cases_per_100k) AS NormalizedPolicyValue, 
-    MEAN(m.new_cases_per_100k) AS new_cases_per_100k, 
-    MEAN(m.new_deaths_per_100k) AS new_deaths_per_100k, 
+    SUM(d.PolicyValue) / MEAN(m.new_cases_per_million) AS NormalizedPolicyValue, 
+    MEAN(m.new_cases_per_million) AS new_cases_per_million, 
+    MEAN(m.new_deaths_per_million) AS new_deaths_per_million, 
     SUM(d.PolicyValue) as TotPolicyValue
 FROM data as d
 LEFT JOIN metadata as m
-ON d.RegionName = m.RegionName AND d.Date = m.date
+ON d.CountryName = m.country AND d.Date = m.date
 WHERE NOT 
     (
         starts_with(d.PolicyType, 'H4') OR
@@ -296,33 +286,22 @@ WHERE NOT
         starts_with(d.PolicyType, 'E4') OR
         starts_with(d.PolicyType, 'E3') OR
         starts_with(d.PolicyType, 'V')
-    )  AND m.new_cases_per_100k > .1 AND d.Jurisdiction = 'STATE_TOTAL'
-GROUP BY d.RegionName, d.Date
-ORDER BY d.RegionName, d.Date
+    )  AND m.new_cases_per_million > .1
+GROUP BY d.CountryName, d.Date
+ORDER BY d.CountryName, d.Date
 ```
 
-
-```sql id=[...UnitedStates]
-SELECT PolicyType, MAX(PolicyValue) AS PolicyValue
-FROM data
-GROUP BY PolicyType;
-```
 
 ```js
-const nation = topojson.feature(us, us.objects.nation)
-const states = topojson.feature(us, us.objects.states).features
-
-const policyTypesUS = new Set(UnitedStates.map(d=>d.PolicyType))
-const Policy2ValUS = (new Map(UnitedStates.map(d => [d.PolicyType, d.PolicyValue])))
-```
-
-```js
-const us = FileAttachment("./data/us-counties-10m.json").json()
+const world = FileAttachment("../data/countries-50m.json").json()
 ```
 
 ```js
 const policyTypes = new Set(raw_data.map(d=>d.PolicyType))
 const Policy2Val = (new Map(raw_data.map(d => [d.PolicyType, d.PolicyValue])))
+
+const countries = topojson.feature(world, world.objects.countries)
+const countrymesh = topojson.mesh(world, world.objects.countries, (a, b) => a !== b)
 ```
 
 
@@ -335,9 +314,9 @@ const Policy2Val = (new Map(raw_data.map(d => [d.PolicyType, d.PolicyValue])))
 ```js
 function facet_policy(data, {width} = {}) {
     return Plot.plot((() => {
-    const ts = data.filter(d => select_c.includes(d.RegionName))
+    const ts = data.filter(d => select_c.includes(d.CountryName))
     const n = select_c.length >= 6 ? 3 : select_c.length <= 3 ? 1 : 2; 
-    const keys = Array.from(d3.union(ts.map((d) => d.RegionName)));
+    const keys = Array.from(d3.union(ts.map((d) => d.CountryName)));
     const index = new Map(keys.map((key, i) => [key, i]));
     const fx = (key) => index.get(key) % n;
     const fy = (key) => Math.floor(index.get(key) / n);
@@ -376,8 +355,8 @@ function facet_policy(data, {width} = {}) {
                         {
                             x: "Date",
                             y: inf_type, 
-                            z: "RegionName",
-                            text: "RegionName",
+                            z: "CountryName",
+                            text: "CountryName",
                             dx: 30
                         })),
             phase_space ? 
@@ -386,12 +365,12 @@ function facet_policy(data, {width} = {}) {
                         filter: (d,i) => i % k === 0,
                         x: "AvgPolicyValue", 
                         y: inf_type, 
-                        z: "RegionName", 
+                        z: "CountryName", 
                         curve: "catmull-rom", 
                         stroke: "Date", 
                         marker: "arrow", 
-                        fy: d => facet ? fy(d.RegionName) : null,
-                        fx: d => facet ? fx(d.RegionName) : null,
+                        fy: d => facet ? fy(d.CountryName) : null,
+                        fx: d => facet ? fx(d.CountryName) : null,
                         tip: true
                         }
                 ) : 
@@ -401,12 +380,12 @@ function facet_policy(data, {width} = {}) {
                         {
                             x: "Date",
                             y: inf_type, 
-                            z: "RegionName", 
+                            z: "CountryName", 
                             stroke: "AvgPolicyValue", 
                             curve: "catmull-rom", 
                             marker: "none",
-                            fy: d => facet ? fy(d.RegionName) : null,
-                            fx: d => facet ? fx(d.RegionName) : null,
+                            fy: d => facet ? fy(d.CountryName) : null,
+                            fx: d => facet ? fx(d.CountryName) : null,
                             strokeWidth: 2,
                             tip: true
                         }))
@@ -429,7 +408,7 @@ const startEndSafe = startEnd === undefined || startEnd === null ? [new Date("20
 
 ```js
 function weekly_infected_brushplot({width} = {}) {
-    const data_f = metadata.filter(d => select_c.includes(d.RegionName))
+    const data_f = metadata.filter(d => select_c.includes(d.country))
     return Plot.plot({
                 height: 200,
                 width,
@@ -447,7 +426,7 @@ function weekly_infected_brushplot({width} = {}) {
                         data_f, 
                         Plot.windowY(
                             { k: window_size }, 
-                            { x: "date", y: inf_type, stroke: "RegionName" })
+                            { x: "date", y: inf_type, stroke: "country" })
                         ),
                         (index, scales, channels, dimensions, context) => {
                     const x1 = dimensions.marginLeft;
@@ -468,15 +447,15 @@ function weekly_infected_brushplot({width} = {}) {
 function phase_space_plot({width}={}) {
 
     // Filter based on brush
-    const ts = Rolling(timeseries).filter(d => select_c.includes(d.RegionName) && new Date(d.Date) >= startEndSafe[0] && new Date(d.Date) <= startEndSafe[1])
+    const ts = Rolling(timeseries).filter(d => select_c.includes(d.CountryName) && new Date(d.Date) >= startEndSafe[0] && new Date(d.Date) <= startEndSafe[1])
 
-    const line_mark = (region, stroke) => Plot.line(ts, 
+    const line_mark = (country, stroke) => Plot.line(ts, 
                     { 
                         // less than ideal, we filter out point instead of taking the moving average
-                        filter: (d,i) => d.RegionName == region,
+                        filter: (d,i) => d.CountryName == country,
                         x: "AvgPolicyValue", 
                         y: "avgCases", 
-                        z: "RegionName", 
+                        z: "CountryName", 
                         curve: "catmull-rom", 
                         stroke, 
                         marker: "arrow", 
@@ -489,7 +468,7 @@ function phase_space_plot({width}={}) {
                     filter: (d,i) => i % 60 === 0,
                     x: "AvgPolicyValue", 
                     y: "avgCases", 
-                    z: "RegionName", 
+                    z: "CountryName", 
                     text: "Date",
                     dy: -6,
                     lineAnchor: "bottom"
@@ -533,8 +512,7 @@ function phase_space_plot({width}={}) {
 ```js
 function policy_plot({width}={}) {
 
-    const ts = Rolling(timeseries).filter(d => 
-        select_c.includes(d.RegionName) && new Date(d.Date) >= startEndSafe[0] && new Date(d.Date) <= startEndSafe[1])
+    const ts = Rolling(timeseries).filter(d => select_c.includes(d.CountryName) && new Date(d.Date) >= startEndSafe[0] && new Date(d.Date) <= startEndSafe[1])
     return Plot.plot({
         width,
         height: 600,
@@ -565,7 +543,7 @@ function policy_plot({width}={}) {
                         {
                             x: "Date",
                             y: "avgCases", 
-                            z: "RegionName", 
+                            z: "CountryName", 
                             stroke: "AvgPolicyValue", 
                             curve: "catmull-rom", 
                             marker: "none",
@@ -577,8 +555,8 @@ function policy_plot({width}={}) {
                         {
                             x: "Date",
                             y: "avgCases", 
-                            z: "RegionName",
-                            text: "RegionName",
+                            z: "CountryName",
+                            text: "CountryName",
                             dx: 30
                         })),
         ]
@@ -588,7 +566,7 @@ function policy_plot({width}={}) {
 
 ```js
 function weekly_infected_plot(data, {width} = {}) {
-    const data_f = data.filter(d => select_c.includes(d.RegionName))
+    const data_f = data.filter(d => select_c.includes(d.country))
     return Plot.plot({
                 height: 200,
                 width,
@@ -601,7 +579,7 @@ function weekly_infected_plot(data, {width} = {}) {
                         data_f, 
                         Plot.windowY(
                             {k: 1}, 
-                            {x: "date", y: "new_cases_per_100k", stroke: "RegionName"})
+                            {x: "date", y: "new_cases_per_million", stroke: "country"})
                         ),
                     Plot.ruleX([new Date(time)], {stroke: "red"}),
                 ]
@@ -610,3 +588,136 @@ function weekly_infected_plot(data, {width} = {}) {
 }
 ```
 
+```js
+function world_map({width}={}) {
+    return Plot.plot({
+    projection: "equal-earth",
+    width,
+    height: width / 2.4,
+    color: {
+        scheme: "YlGnBu", 
+        unknown: "#ccc", 
+        type: "ordinal",
+        label: "Policy Value", 
+        legend: true,
+        domain: d3.range(Policy2Val.get(select)+1),
+        range: [0, 0.9]
+    } ,
+    marks: [
+        Plot.sphere({stroke: "currentColor"}),
+        Plot.geo(countries, {
+            tip:true,
+            title: (d => d.properties.name),
+            fill: (map => d => map.get(d.properties.name))(new Map(filteredData.map(d => [d.CountryName, d.PolicyValue])))
+        }),
+        Plot.geo(countrymesh, {stroke: "black", strokeOpacity: 0.3}),
+    ]
+    })
+}
+```
+
+
+
+<!-- ### Metadata
+
+```sql
+SELECT * FROM metadata
+```
+
+I want timeseries of policy values, but somehow normalized by the fraction of people infected on that date and place.
+
+```sql
+SELECT 
+    d.CountryName, 
+    d.Date, 
+           SUM(d.PolicyValue) / MEAN(m.new_cases_per_million) AS NormalizedPolicyValue, 
+    MEAN(m.new_cases_per_million) AS AvgTotCasesPerMillion, 
+    SUM(d.PolicyValue) as TotPolicyValue
+FROM data as d
+LEFT JOIN metadata as m
+ON d.CountryName = m.country AND d.Date = m.date
+WHERE NOT 
+    (
+        starts_with(d.PolicyType, 'E') OR
+        starts_with(d.PolicyType, 'H4') OR
+        starts_with(d.PolicyType, 'H5') OR
+        starts_with(d.PolicyType, 'V')
+    ) AND CountryName = 'Canada'
+GROUP BY d.CountryName, d.Date
+ORDER BY d.CountryName, d.Date
+``` -->
+
+
+```js
+function filterByRegion(filteredData, region) {
+  // Define different lists of countries or other conditions
+  const europeanCountries = [
+    "Albania", "Andorra", "Armenia", "Austria", "Azerbaijan", "Belarus", "Belgium", "Bosnia and Herzegovina",  "Bulgaria", "Croatia", "Cyprus", "Czech Republic", "Denmark", "Estonia", "Finland", "France", "Georgia", "Germany", "Greece", "Hungary", "Iceland", "Ireland", "Italy", "Kazakhstan", "Latvia", 
+    "Liechtenstein", "Lithuania", "Luxembourg", "Malta", "Moldova", "Monaco", "Montenegro", "Netherlands", 
+    "North Macedonia", "Norway", "Poland", "Portugal", "Romania", "San Marino", "Serbia", 
+    "Slovakia", "Slovenia", "Spain", "Sweden", "Switzerland", "Turkey", "Ukraine", "United Kingdom"
+  ];
+
+  const asianCountries = [
+    "China", "India", "Japan", "South Korea", "Indonesia", "Malaysia", "Singapore", "Thailand", 
+    "Vietnam", "Philippines", "Pakistan", "Bangladesh", "Sri Lanka", "Nepal", "Bhutan", "Maldives", "Mongolia"
+  ];
+
+  const africanCountries = [
+    "Nigeria", "South Africa", "Egypt", "Kenya", "Ghana", "Morocco", "Ethiopia", "Sudan", "Uganda", 
+    "Tanzania", "Angola", "Zambia", "Zimbabwe", "Botswana", "Rwanda"
+  ];
+
+
+  const northAmericanCountries = [
+    "United States", "Canada", "Mexico", "Guatemala", "Honduras", "El Salvador", "Nicaragua", "Costa Rica", 
+    "Panama", "Belize", "Jamaica", "Trinidad and Tobago", "Barbados", "Saint Lucia", "Saint Vincent and the Grenadines"
+  ];
+
+  const southAmericanCountries = [
+    "Argentina", "Brazil", "Chile", "Colombia", "Ecuador", "Peru", "Bolivia", "Paraguay", "Uruguay", 
+    "Venezuela", "Guyana", "Suriname"
+  ];
+
+  const oceanianCountries = [
+    "Australia", "New Zealand", "Fiji", "Papua New Guinea", "Solomon Islands", "Vanuatu", "Samoa", 
+    "Tonga", "Kiribati", "Tuvalu", "Nauru", "Palau", "Marshall Islands", "Micronesia"
+  ];
+
+  // Define a switch case to choose the correct list
+  let selectedCountries;
+  switch (region) {
+    case 'Europe':
+      selectedCountries = europeanCountries;
+      break;
+    case 'Asia':
+      selectedCountries = asianCountries;
+      break;
+    case 'Africa':
+      selectedCountries = africanCountries;
+      break;
+    case 'North America':
+      selectedCountries = northAmericanCountries;
+      break;
+    case 'South America':
+      selectedCountries = southAmericanCountries;
+      break;
+    case 'Oceania':
+      selectedCountries = oceanianCountries;
+      break;
+    default:
+      selectedCountries = filteredData.map(d=>d.CountryName);  // Default to an empty list if no region matches
+  }
+
+
+  // Filter the data based on the selected list
+  return filteredData
+    .map(d => d.CountryName)
+    .filter(d => selectedCountries.includes(d));
+}
+```
+
+
+```js
+d3.sum(raw_data.map(d=>d.PolicyValue))
+```

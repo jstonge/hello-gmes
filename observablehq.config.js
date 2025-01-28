@@ -6,22 +6,30 @@ export default {
   // The pages and sections in the sidebar. If you don’t specify this option,
   // all pages will be listed in alphabetical order. Listing pages explicitly
   // lets you organize them into sections and have unlisted pages.
-  // pages: [
-  //   {
-  //     name: "Examples",
-  //     pages: [
-  //       {name: "Dashboard", path: "/example-dashboard"},
-  //       {name: "Report", path: "/example-report"}
-  //     ]
-  //   }
-  // ],
+  pages: [
+    {name: "getting-started", path: "/getting-started"},
+    {
+      name: "Models",
+      path: "/models/",
+      pages: [
+        {name: "Source Sink", path: "/models/source-sink"},
+        {name: "Call For Action", path: "/models/call-for-action"}
+      ]
+    },
+    {
+      name: "Data-Driven",
+      path: "/empirical/",
+      pages: [
+        {name: "OxGRT - Subnational level", path: "/empirical/subnational-oxcart"},
+        {name: "OxGRT - National level", path: "/empirical/world-oxcart"},
+      ]
+    }
+  ],
 
   // Content to add to the head of the page, e.g. for a favicon:
   head: '<link rel="icon" href="observable.png" type="image/png" sizes="32x32">',
-
-  // The path to the source root.
+  header: ({path}) => `<div style="display: justify-content: flex-end; direction: rtl;"><small><a href="https://github.com/jstonge/hello-gmes/blob/main/src${path}.md?plain=1">view source</a></small></div>`,
   root: "src",
-
   // Some additional configuration options and their defaults:
   // theme: "default", // try "light", "dark", "slate", etc.
   // header: "", // what to show in the header (HTML)
