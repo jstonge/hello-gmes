@@ -93,7 +93,7 @@ Reducing the copying rate enough, we observe the prevalence curve becoming non-m
 
 Consider the following
 
-<img src="quadrant.png" alt="quadrant" style="width:70%">
+<img src="../assets/quadrant.png" alt="quadrant" style="width:70%">
 
 
 - The upper left quadrant represents the time evolution of the average number of people infected by institution level. The dotted line is the global average, here converging to about 41% of people being infected.

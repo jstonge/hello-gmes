@@ -45,9 +45,9 @@ import { get_param_table, global_hm, get_data_heatmap, f, minmax, s } from "../c
 
 _Institutional localization_: In some regime, we can see that some institutional levels dominate phase space. The faceted figure on the bottom corresponds to  **Figure 5** in the paper. 
 
-<img src="inst_local.png" alt="quadrant" style="width:30%">
+<img src="../assets/inst_local.png" alt="quadrant" style="width:30%">
 
-<img src="paper1.png" alt="quadrant" style="width:60%">
+<img src="../assets/paper1.png" alt="quadrant" style="width:60%">
 
 <!-- IMPORT DATA -->
 

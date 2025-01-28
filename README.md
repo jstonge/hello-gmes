@@ -52,24 +52,7 @@ Right now the libs are compiled for `Julia 1.10` and higher.
 
 ## Project structure
 
-We yse[Observable Framework](https://observablehq.com/framework/project-structure) structure, but modify it a little to accomodate our simulation work. On top of the Observable Framework project that mostly lives in `src/` (see hidden summary below for authors' description), we have a project structure following from the [Turing Way's repository structure](https://book.the-turing-way.org/project-design/project-repo/project-repo-advanced#example-with-every-possible-folder):
-
-```ini
-.
-├─ src # Observable framework app
-├─ analysis
-│  ├─ InstitutionalDynamics.jl # gitsubmodules
-│  ├─ processing.jl 
-│  ├─ examples/ 
-│  ├─ script-2-vacc.jl 
-│  └─ source-sink-db.jl 
-├─ .gitignore
-├─ Makefile # A makefile to run the pipelind
-├─ observablehq.config.js  # Config file
-├─ package.json
-├─ README.md
-└─ reqirements.txt
-```
+We use[Observable Framework](https://observablehq.com/framework/project-structure) structure, but modify it a little to accomodate our simulation work. On top of the Observable Framework project that mostly lives in `src/` (see hidden summary below for authors' description), we have a project structure following from the [Turing Way's repository structure](https://book.the-turing-way.org/project-design/project-repo/project-repo-advanced#example-with-every-possible-folder):
 
 Our simulation code lives in `analysis/`. We have a subfolder called `RSB_submission` to play with code we written for our paper submitted to the _Royal Society B_. We use the [Julia programming language](https://julialang.org/) as our backend. At the root-directory level, we have `Manifest.toml` and `Project.toml` to specify the environment to run the simulation.
 

@@ -4,9 +4,9 @@ theme: "air"
 ---
 
 <div class="hero">
-  <h1>Hello Group-based modeling</h1>
+  <h1>Hello group-based modeling</h1>
   <h2>We study how group-based models impact how we think about all sorts of contagion.</h2>
-  <a href="https://mocs.observablehq.cloud/mocs-fall-2024/getting-started" target="_blank">Get started<span style="display: inline-block; margin-left: 0.25rem;">→</span></a>
+  <a href="https://joint-lab.observablehq.cloud/hello-gmes/getting-started" target="_blank">Get started<span style="display: inline-block; margin-left: 0.25rem;">→</span></a>
 </div>
 
 <div class="gallery grid grid-cols-3" style="grid-auto-rows;">
