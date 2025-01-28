@@ -2,10 +2,10 @@ DATA_DIR=$(realpath ./data)
 DATA_DIR_RAW=$(DATA_DIR)/raw
 DATA_DIR_CLEAN=$(DATA_DIR)/clean
 
-FRAMEWORK_DIR=$(realpath ./docs)
+FRAMEWORK_DIR=$(realpath ./src)
 DATA_DIR_OBS=$(FRAMEWORK_DIR)/data
 
-SCRIPT_DIR=./src
+SCRIPT_DIR=./analysis
 INST_DYNAMIC_DIR=$(SCRIPT_DIR)/InstitutionalDynamics.jl
 RESULT_DIR=$(realpath ./results)
 PROCESSED_DIR=$(RESULT_DIR)/processed
@@ -27,9 +27,9 @@ COST=1.05
 MU=1e-4
 single-run-source-sink: 
 	mkdir -p tmp/
-	julia --project=@. src/InstitutionalDynamics.jl/src/sourcesink1.jl --beta $(BETA) -g $(GAMMA) -r $(RHO) -b $(B) -c $(COST) -m $(MU)
+	julia --project=@. $(INST_DYNAMIC_DIR)/src/sourcesink1.jl --beta $(BETA) -g $(GAMMA) -r $(RHO) -b $(B) -c $(COST) -m $(MU)
 	mv sourcesink1* tmp/
-	julia --project=@. src/processing.jl -i tmp/ -o docs/data/single_run
+	julia --project=@. $(SCRIPT_DIR)/processing.jl -i tmp/ -o $(DATA_DIR_OBS)/single_run
 	rm -rf tmp/
 
 BETA=0.07
@@ -43,9 +43,9 @@ COST=1.05
 MU=1e-4
 single-run-coevo: 
 	mkdir -p tmp/
-	julia --project=@. src/InstitutionalDynamics.jl/src/sourcesink2.jl --beta $(BETA) --xi $(XI) -a $(ALPHA) -g $(GAMMA) -r $(RHO) -e $(ETA) -b $(B) -c $(COST) -m $(MU)
+	julia --project=@. $(INST_DYNAMIC_DIR)/src/sourcesink2.jl --beta $(BETA) --xi $(XI) -a $(ALPHA) -g $(GAMMA) -r $(RHO) -e $(ETA) -b $(B) -c $(COST) -m $(MU)
 	mv sourcesink2_* tmp/
-	julia --project=@. src/processing.jl -i tmp/ -o docs/data/single_run
+	julia --project=@. $(SCRIPT_DIR)/processing.jl -i tmp/ -o $(DATA_DIR_OBS)/single_run
 	rm -rf tmp/
 
 ################################
