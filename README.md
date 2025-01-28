@@ -9,7 +9,23 @@ You have three ways to interact with our project:
 
 - `Online`: a dashboard lives [here](https://joint-lab.observablehq.cloud/hello-gmes/). You can explore the parameters sweep that we have precomputed.
 - `Make`: follow the installation steps, then you should be able to do single runs using `make` (see installation below).
-- `Code`: see [this repo](https://github.com/jstonge/InstitutionalDynamics.jl) or this [example folder](src/examples).
+- `Code`: see [this repo](https://github.com/jstonge/InstitutionalDynamics.jl) or this [example folder](analysis/examples).
+
+For the brave, you can run the single runs (run with a chosen set of parameters) with `make`, and launch the app. The run will show up in the `single-run/` page once finished running:
+
+```zsh
+# run single run with make, e.g.
+make single-run-coevo BETA=0.16 RHO=0.05 ETA=0.26 XI=1 ALPHA=1. GAMMA=1 B=0.2 C=0.5
+# install observable app
+npm install
+# launch the app
+npm run dev
+```
+If you don't feel like it, then you are stuck with the preselected parameter sweep we have done for the paper. It is always possible to run the Julia code.
+
+#### OxCGRT data
+
+We are in the process of testing our theorerical model with the OxCGRT data. The OxCGRT data tracked policies in response to the COVID-19 pandemic at national and subnational level. The policies details are described [here](https://github.com/OxCGRT/covid-policy-dataset/blob/main/documentation_and_codebook.md#codebook-and-interpretation-guidance). Maps of the policies can be found in the live dashboard.
 
 ## Installation
 
@@ -31,46 +47,14 @@ julia> ]
 # ctrl+d to quit
 ```
 
-Right now the libs are compiled for `Julia 1.10` and higher. Once done, we can run the single-run with `make`, and launch the app. The run will show up in the `single-run/` page once finished running:
+Right now the libs are compiled for `Julia 1.10` and higher. 
 
-```zsh
-# run single run with make, e.g.
-make single-run-coevo BETA=0.16 RHO=0.05 ETA=0.26 XI=1 ALPHA=1. GAMMA=1 B=0.2 C=0.5
-# install observable app
-npm install
-# launch the app
-npm run dev
-```
 
 ## Project structure
 
-We take as starting point the [Observable Framework](https://observablehq.com/framework/project-structure) structure, but modify it a little to accomodate our simulation work. That is, on top of the Observable Framework project that mostly lives in `docs/` (see hidden summary below for authors' description), we have a project structure heavily inspired from the [Turing Way's repository structure](https://book.the-turing-way.org/project-design/project-repo/project-repo-advanced#example-with-every-possible-folder):
+We use[Observable Framework](https://observablehq.com/framework/project-structure) structure, but modify it a little to accomodate our simulation work. On top of the Observable Framework project that mostly lives in `src/` (see hidden summary below for authors' description), we have a project structure following from the [Turing Way's repository structure](https://book.the-turing-way.org/project-design/project-repo/project-repo-advanced#example-with-every-possible-folder):
 
-```ini
-.
-├─ data # Observable framework app
-│  └─ raw       # import/raw data
-│     ├── input_file_1.parquet
-│     └─ input_file_2.parquet # file that is coming from excel sheet
-├─ docs # Observable framework app
-├─ src
-│  ├─ InstitutionalDynamics.jl # gitsubmodules
-│  ├─ processing.jl 
-│  ├─ script-2-vacc.jl 
-│  └─ source-sink-db.jl 
-├─ .gitignore
-├─ static # static resources (images and audio files)
-├─ Makefile # A makefile to run the pipelind
-├─ observablehq.config.js  # Observable Framework project config file
-├─ package.json
-├── results/   # static analysis
-│   ├── result1.txt 
-│   └── result2.txt
-├─ README.md
-└─ reqirements.txt
-```
-
-Our simulation code lives in `src/`. We have a subfolder called `RSB_submission` to play with code we written for our paper submitted to the _Royal Society B_. We output our simulation results in `results/`, which are then used by the app data loaders. We use the [Julia programming language](https://julialang.org/) as our backend. At the root-directory level, we have `Manifest.toml` and `Project.toml` to specify the environment to run the simulation.
+Our simulation code lives in `analysis/`. We have a subfolder called `RSB_submission` to play with code we written for our paper submitted to the _Royal Society B_. We use the [Julia programming language](https://julialang.org/) as our backend. At the root-directory level, we have `Manifest.toml` and `Project.toml` to specify the environment to run the simulation.
 
 <details><summary>How to get started with Observable Framework</summary>
 
@@ -132,17 +116,3 @@ A typical Framework project looks like this:
 
 </details>
 
-<br>
-
-
-## Group-based modeling
-
-Here we describe the goals of our different interactive visualizations.
-
-#### 1. Replicating Hébert-Dufresne et al. 2022
-
-A group-based approach to model behavior and institution co-evolution
-
-#### 2. Call for action
-
-TO WRITE
