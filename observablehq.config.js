@@ -8,7 +8,8 @@ export default {
       path: "/getting-started",
       pages: [
         {name: "Source Sink", path: "/models/source-sink"},
-        {name: "Call For Action", path: "/models/call-for-action"}
+        {name: "Call For Action", path: "/models/call-for-action"},
+        {name: "Model 3", path: "/models/model-3"}
       ]
     },
     {

@@ -7,7 +7,7 @@ export function plot_time_evo(data, is_prop, {width} = {}) {
   return Plot.plot({
     width,
     height: 300,
-    x: { type: "log" },
+    x: { type: "linear" },
     y: { percent: true, grid: true}, 
     color: { 
       scheme: is_prop ? "Blues" : "Reds", 

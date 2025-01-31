@@ -157,7 +157,8 @@ const sourcesink2_lookup_map = sourcesink2_lookup.reduce(function(map, obj) {
 ```
 
 ```js
-const chosen_row_id = sourcesink2_lookup_map[`${f(ax_form['ax0'])}_${f(fp_form['fp0'])}_${f(fp_form['fp1'])}_${f(fp_form['fp2'])}_${f(ax_form['ax1'])}_${f(ax_form['ax2'])}_${f(fp_form['fp3'])}_${f(fp_form['fp4'])}_0.0001`]
+const param_str = `${f(ax_form['ax0'])}_${f(fp_form['fp0'])}_${f(fp_form['fp1'])}_${f(fp_form['fp2'])}_${f(ax_form['ax1'])}_${f(ax_form['ax2'])}_${f(fp_form['fp3'])}_${f(fp_form['fp4'])}_0.0001`
+const chosen_row_id = sourcesink2_lookup_map[param_str]
 ```
 
 <!-- filter data time evo plot  -->
@@ -188,8 +189,8 @@ ORDER BY (s.row_id, s.L)
 
 ```js
 // Heatmap-related data
-const data_hm2 = get_data_heatmap(phase_diagram_data, lookup2, fp2, ax_vars2, radio, ax_form, fp_form, fy2)
-const data_hm2b = get_data_heatmap(phase_diagram_data, lookup2, fp2, ax_vars2, radiob, ax2_form, fp2_form, fy2)
+const data_hm2 = get_data_heatmap(phase_diagram_data, lookup2, fp2, ax_vars2, radio, ax_form, fp_form)
+const data_hm2b = get_data_heatmap(phase_diagram_data, lookup2, fp2, ax_vars2, radiob, ax2_form, fp2_form)
 ```
 
 
@@ -215,7 +216,7 @@ const ax_formInput = Inputs.form({
 
 const fp_formInput = Inputs.form({
   fp0: Inputs.range(p2[fp2[0]]['minmax'], {step: p2[fp2[0]]['s'], label: `${fp2[0]} (Simple-complex)`, value: p2[fp2[0]]['first_val'], width: 190}),
-  fp1: Inputs.range(p2[fy2]['minmax'], {step: p2[fy2]['s'], label: `${fy2} (Neg. benefits)`, value: p2[fy2]['first_val'], width: 190}),
+  fp1: Inputs.range(p2[fp2[1]]['minmax'], {step: p2[fp2[1]]['s'], label: `${fp2[1]} (Neg. benefits)`, value: p2[fp2[1]]['first_val'], width: 190}),
   fp2: Inputs.range(p2[fp2[2]]['minmax'], {step: p2[fp2[2]]['s'], label: `${fp2[2]} (Recovery rate)`, value: p2[fp2[2]]['first_val'], width: 190}),
   fp3: Inputs.range(p2[fp2[3]]['minmax'], {step: p2[fp2[3]]['s'], label: `${fp2[3]} (Group benefits)`, value: -1, width: 190}),
   fp4: Inputs.range(p2[fp2[4]]['minmax'], {step: p2[fp2[4]]['s'], label: `${fp2[4]} (Inst. Cost)`, value: p2[fp2[4]]['first_val'], width: 190})
@@ -239,7 +240,7 @@ const ax2_formInput = Inputs.form({
 
 const fp2_formInput = Inputs.form({
   fp0: Inputs.range(p2[fp2[0]]['minmax'], {step: p2[fp2[0]]['s'], label: fp2[0], value: p2[fp2[0]]['first_val'], disabled: true}),
-  fp1: Inputs.range(p2[fy2]['minmax'], {step: p2[fy2]['s'], label: fy2, value: p2[fy2]['first_val'], disabled: true}),
+  fp1: Inputs.range(p2[fp2[1]]['minmax'], {step: p2[fp2[1]]['s'], label: fp2[1], value: p2[fp2[1]['first_val']]['first_val'], disabled: true}),
   fp2: Inputs.range(p2[fp2[2]]['minmax'], {step: p2[fp2[2]]['s'], label: fp2[2], value: p2[fp2[2]]['first_val'], disabled: true}),
   fp3: Inputs.range(p2[fp2[3]]['minmax'], {step: p2[fp2[3]]['s'], label: fp2[3], value: -1}),
   fp4: Inputs.range(p2[fp2[4]]['minmax'], {step: p2[fp2[4]]['s'], label: fp2[4], value: p2[fp2[4]]['first_val'], disabled: true}),
