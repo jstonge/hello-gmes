@@ -7,9 +7,11 @@ etc/figs_paper/
 etc/netsci2023/netsci2023_files/
 etc/netsci2023/figs/
 analysis/examples/SlowInst_endemic.pdf
+analysis/examples/.cache/*
 .venv/
 jsconfig.json
 
 tmp/
 etc/tmp/
 results/
+slurm-*

@@ -26,7 +26,7 @@ function main()
     global INPUT_DIR = args["i"]
     global MODEL_NAME = args["m"]
     global OUTPUT_DIR = joinpath(args["o"], "$(MODEL_NAME)_output")
-    global MODEL_DIR = joinpath("src", "InstitutionalDynamics.jl")
+    global MODEL_DIR = joinpath("analysis", "InstitutionalDynamics.jl")
     script_folder = "$(OUTPUT_DIR)/vacc_script"
     
     if isdir("$(OUTPUT_DIR)") == false

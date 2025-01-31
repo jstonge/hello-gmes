@@ -33,6 +33,7 @@ function main()
   args = parse_commandline()
   
   # DATA_DIR = "tmp/"
+  # DATA_DIR = "results/sourcesink3_output/"
   DATA_DIR = args["input"]
   fnames = filter(x -> endswith(x, "txt"),  readdir(DATA_DIR, join=true))
   

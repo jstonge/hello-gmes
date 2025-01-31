@@ -1,4 +1,4 @@
-# using Pkg; Pkg.activate("../../");
+# using Pkg; Pkg.activate("../");
 using SQLite, ArgParse, DataFrames
 
 function parse_commandline()
@@ -45,9 +45,11 @@ end
 function model3()
   SQLite.execute(db, """DROP TABLE IF EXISTS sourcesink3""")
   param_list = []
-  for β=0.0:0.01:0.15, ρ=0.0:0.01:0.15, b=0.1:0.1:0.3, α=0.0:0.01:0.15
+  n, Lmax = 20, 5
+  b, c, μ, δ = 0.26, 1., 0.1, 1.
+  @assert n*b - Lmax*c > 0 "lower bound"
+  for β=0.0:0.01:0.15, ρ=0.0:0.01:0.15, γ=0.0:0.01:0.15, α=0.15:0.01:0.2
     γ = β
-    c, μ, δ = 1., 0.1, 1.
     params = (β, γ, ρ, b, c, μ, δ, α)
     push!(param_list, params)
   end
