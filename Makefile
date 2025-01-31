@@ -51,84 +51,42 @@ single-run-coevo:
 ################################
 #                              #
 #        PARAMETER SWEEP       #
-#         (model 2)            #
 #                              #
 ################################
 
-# Repducing the Paradoxes in the co-evolution of contagions and institutions results
-.PHONY: run-coevo-sim
+# usage: make sweep model=1
+.PHONY: sweep
 
 # Note can these results can only be run on the UVM cluster. 
-run-coevo-sim: populate_param_db vacc_scripts run_vacc_scripts process_raw_data_coevo sparsify
+sweep: populate_param vacc_scripts run_vacc_scripts process sparsify
 
-# We first create a sqlite database containing all the parameter combinations
-populate_param_db:
-	julia --project=@. $(SCRIPT_DIR)/source-sink-db.jl -m 2 -o $(RESULT_DIR)
+# Create DB containing the parameter combinations
+populate_param:
+	julia --project=@. $(SCRIPT_DIR)/source-sink-db.jl -m $(model) -o $(RESULT_DIR)
 
-# We have a helper scripts that turn the parameter combinations into many slurms scripts
-# that can be run in parallel. It has been hardcoded so that we do about 30 lines of parameters
-# for each node.
+# Turn the parameter combinations into many slurms scripts that can be run in parallel. 
+# Here it is hardcoded so that we do about 30 lines of parameters for each node.
 vacc_scripts:
-	julia --project=@. $(SCRIPT_DIR)/script-2-vacc.jl -i $(RESULT_DIR) -m sourcesink2 -b 30 -o $(RESULT_DIR)
+	julia --project=@. $(SCRIPT_DIR)/script-2-vacc.jl -i $(RESULT_DIR) -m sourcesink$(model) -b 30 -o $(RESULT_DIR)
 
 # We send all those files to the server. We need to be careful as the VACC don't like >1000 files at a time.
 run_vacc_scripts:
-	for file in $$(ls $(RESULT_DIR)/sourcesink2_output/vacc_script/*.sh); do sbatch $$file; done;
+	for file in $$(ls $(RESULT_DIR)/sourcesink$(model)_output/vacc_script/*.sh); do sbatch $$file; done;
 
-# We postprocess the data a first time. We are rounding up to 7 digits, and aggregate all the 
-# runs into a single file.
-process_raw_data_coevo:
+# We postprocess the data a first time. We are rounding up to 7 digits, and aggregate all the runs into a single file.
+process:
 	sbatch --mem 60G --partition short --nodes 1 \
 		   --ntasks=20 --time 02:59:59 \
-		   --job-name=processing .run_processing.sh $(RESULT_DIR)/sourcesink2_output/ $(PROCESSED_DIR)/
+		   --job-name=processing .run_processing.sh $(RESULT_DIR)/sourcesink$(model)_output/ $(PROCESSED_DIR)/
 
-# Sometimes the data is too big, so we remove all the values where the diff between t and t+1 > 1e-4.
+# Sometimes the data is too big for front-end, so we remove all the values where the diff between t and t+1 > 1e-4.
 sparsify:
-	python .sparsify.py sourcesink2_output
+	python .sparsify.py sourcesink$(model)_output
 
 # Run parts of all the .sh files
 # for i in {1..508}; do sbatch sourcesink2_output/vacc_script/combine_folder_$i.sh; done;
 # sh .check_nodes.sh
 # for i in {508..1016}; do sbatch sourcesink2_output/vacc_script/combine_folder_$i.sh; done;
-
-################################
-#                              #
-#        PARAMETER SWEEP       #
-#         (model 3)            #
-#                              #
-################################
-
-# Repducing the Paradoxes in the co-evolution of contagions and institutions results
-.PHONY: run-model-3-sim
-
-# Note can these results can only be run on the UVM cluster. 
-run-model-3-sim: populate_param_db_3 vacc_scripts_3 run_vacc_scripts_3 process_raw_data_model_3 sparsify_3
-
-# We first create a sqlite database containing all the parameter combinations
-populate_param_db_3:
-	julia --project=@. $(SCRIPT_DIR)/source-sink-db.jl -m 3 -o $(RESULT_DIR)
-
-# We have a helper scripts that turn the parameter combinations into many slurms scripts
-# that can be run in parallel. It has been hardcoded so that we do about 30 lines of parameters
-# for each node.
-vacc_scripts_3:
-	julia --project=@. $(SCRIPT_DIR)/script-2-vacc.jl -i $(RESULT_DIR) -m sourcesink3 -b 30 -o $(RESULT_DIR)
-
-# We send all those files to the server. We need to be careful as the VACC don't like >1000 files at a time.
-run_vacc_scripts3:
-	for file in $$(ls $(RESULT_DIR)/sourcesink3_output/vacc_script/*.sh); do sbatch $$file; done;
-
-# We postprocess the data a first time. We are rounding up to 7 digits, and aggregate all the 
-# runs into a single file.
-process_raw_data_model_3:
-	sbatch --mem 60G --partition short --nodes 1 \
-		   --ntasks=20 --time 02:59:59 \
-		   --job-name=processing .run_processing.sh $(RESULT_DIR)/sourcesink3_output/ $(PROCESSED_DIR)/
-
-# Sometimes the data is too big, so we remove all the values where the diff between t and t+1 > 1e-4.
-sparsify_3:
-	python .sparsify.py sourcesink3_output
-
 
 #########################
 #                       #
@@ -144,6 +102,6 @@ clean-obs:
 clean-sims:
 	rm -f results/sourcesink$(model)_output/* || true
 	rm -f results/sourcesink$(model)_output/vacc_script/* || true
-	rm results/sourcesink$(model).parquet || true
-	rm results/sourcesink$(model)_lookup.parquet || true
+	rm results/processed/sourcesink$(model).parquet || true
+	rm results/processed/sourcesink$(model)_lookup.parquet || true
 	rm -f slurm-* || true
