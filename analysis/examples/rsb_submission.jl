@@ -1,11 +1,11 @@
 using Pkg; Pkg.activate(".")
 using OrdinaryDiffEq: ODESolution
 using Plots
+using InstitutionalDynamics: run_source_sink2
 
 # Check help for details, e.g.
 # julia> ?
 # help?> dynamics!
-include("../InstitutionalDynamics.jl/src/sourcesink2.jl")
 
 """
   parse_sol(s)
