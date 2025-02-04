@@ -49,6 +49,19 @@ julia> ]
 
 Right now the libs are compiled for `Julia 1.10` and higher. 
 
+## Instruction to run data app with raw data
+
+- clone this repo
+- ask me for the data (or you'll find it on the VACC `/users/j/s/jstonge1/hello-gmes/results/processed`, you should be able to access it)
+- put the data in the `src/data`
+- open web page source code for a selected model:
+   - model 1: `src/models/source-sink.md`
+   - model 2: `src/models/call-for-action.md`
+   - model 3: `src/models/model-3.md`
+- In the YAML at the top, change file `$(model_name)_sparsified.parquet` to `$(model_name).parquet`. The YAML looks like:
+<img width="500" alt="Screenshot 2025-02-04 at 9 47 24 AM" src="https://github.com/user-attachments/assets/f6f394cb-0503-484d-b085-f77a120d2496" />
+
+- run project using `npm run dev` (see instructions below if you don't have npm installed)
 
 ## Project structure
 
