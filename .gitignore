@@ -16,5 +16,4 @@ etc/tmp/
 results/
 slurm-*
 
-src/data/sourcesink3_lookup.parquet
-src/data/sourcesink3.parquet
+src/data/

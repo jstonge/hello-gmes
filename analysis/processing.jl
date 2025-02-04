@@ -24,15 +24,12 @@ function parse_commandline()
   return parse_args(s)
 end
 
-processing1(x, n) = round(sum((collect(0:(n-1)) / n) .* x) / sum(x), digits=7)
-
 """
 Combine all sols and proportion in `sourcesink_output/`, using only unique value, into a parquet file.
 """
 function main()
   args = parse_commandline()
   
-  # DATA_DIR = "tmp/"
   DATA_DIR = args["input"]
   fnames = filter(x -> endswith(x, "txt"),  readdir(DATA_DIR, join=true))
   
@@ -63,8 +60,10 @@ function main()
     n = nrow(gd[1])
     
     # process functions
+    processing(x, n) = round(sum((collect(0:(n-1)) / n) .* x) / sum(x), digits=7)
+
     df_agg = combine(gd, :value => (x -> round(sum(x), digits=7)) => :value_prop, 
-                         :value => (x -> iszero(sum(x)) ? 0.0 : processing1(x,n)) => :value)
+                         :value => (x -> iszero(sum(x)) ? 0.0 : processing(x,n)) => :value)
   
     # Take timestep maxmin so all levels have same length
     minmax_timestep = @pipe df_agg |>

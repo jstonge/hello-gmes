@@ -79,9 +79,10 @@ process:
 		   --ntasks=20 --time 02:59:59 \
 		   --job-name=processing .run_processing.sh $(RESULT_DIR)/sourcesink$(model)_output/ $(PROCESSED_DIR)/
 
-# Sometimes the data is too big for front-end, so we remove all the values where the diff between t and t+1 > 1e-4.
+# Sometimes the data is too big for front-end, so we remove all the values where the diff between t and t+1 > $(tolerance).
+# where tolerance is often set to 1e-4.
 sparsify:
-	python .sparsify.py sourcesink$(model)_output
+	python .sparsify.py -i $(PROCESSED_DIR)/sourcesink$(model).parquet -t $(tolerance)
 
 # Run parts of all the .sh files
 # for i in {1..508}; do sbatch sourcesink2_output/vacc_script/combine_folder_$i.sh; done;
