@@ -1,14 +1,14 @@
 import * as Plot from "npm:@observablehq/plot";
 import { flatRollup, sum } from "npm:d3-array";
 
-export function plot_time_evo(data, is_prop, {width} = {}) {
+export function plot_time_evo(data, is_prop, {width, yaxis} = {}) {
   const global_mean = flatRollup(data, v => sum(v, d => d.value * d.value_prop), d => d.timestep)
 
   return Plot.plot({
     width,
     height: 300,
-    x: { type: "linear" },
-    y: { percent: true, grid: true}, 
+    x: { type: "log" },
+    y: { percent: true, grid: true }, 
     color: { 
       scheme: is_prop ? "Blues" : "Reds", 
       type: "ordinal", 
@@ -18,7 +18,7 @@ export function plot_time_evo(data, is_prop, {width} = {}) {
     marks: [
       Plot.axisY({ 
         labelAnchor: "center", 
-        label: is_prop ? "% of institutions of that strength" : "% infected", 
+        label: is_prop ? "% of institutions of that strength" : yaxis, 
         tickSpacing: 80, labelArrow: "none" 
       }),
       Plot.axisX({ 

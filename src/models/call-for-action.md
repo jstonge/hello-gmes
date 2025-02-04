@@ -28,7 +28,7 @@ import { get_param_table, global_hm, get_data_heatmap, f, minmax, s } from "../c
       <div>${fp_formInput}</div>
     </div>
     <div class="grid grid-cols-2">
-      <div>${resize((width) => plot_time_evo(time_evo_data, false, { width }))}</div>
+      <div>${resize((width) => plot_time_evo(time_evo_data, false, { width,  yaxis: "% infected" }))}</div>
       <div>${resize((width) => plot_time_evo(time_evo_data, true, { width }))}</div>
     </div>
     <div class="grid grid-cols-3">

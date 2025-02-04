@@ -1,6 +1,8 @@
 using Distributed
+using Measures
+using Plots
 
-@everywhere include("sourcesink2.jl") # import helpers at the same time
+include("../InstitutionalDynamics.jl/src/sourcesink2.jl") # import helpers at the same time
 
 # I vs β ------------------------------------------------------------------
 

@@ -4,12 +4,13 @@ title: Call-for-action
 style: ../custom-style.css
 toc: false
 sql:
-  sourcesink: ../data/sourcesink3.parquet
+  sourcesink: ../data/sourcesink3_sparsified.parquet
   sourcesink_lookup: ../data/sourcesink3_lookup.parquet
 ---
 
 # Model 3
 
+<div class="warning" label="⚠️ Warning">To keep the visualization light, we "sparsified" the raw output with  <a href="https://github.com/jstonge/hello-gmes/blob/main/.sparsify.py#L5-L9">.sparsify.py#L5-L9</a>. That is, we throw away points where the absolute difference between two time steps is greater than 0.00001. This lead to premature termination of runs and more rough results. That said, the results are  qualitatively the same than with raw data. If you </div>
 
 <!-- DASHBOARD 1 -->
 
@@ -28,7 +29,7 @@ import { get_param_table, global_hm, get_data_heatmap, f, minmax, s } from "../c
       <div>${fp_formInput}</div>
     </div>
     <div class="grid grid-cols-2">
-      <div>${resize((width) => plot_time_evo(time_evo_data, false, { width }))}</div>
+      <div>${resize((width) => plot_time_evo(time_evo_data, false, { width,  yaxis: "% cooperators" }))}</div>
       <div>${resize((width) => plot_time_evo(time_evo_data, true, { width }))}</div>
     </div>
     <div class="grid grid-cols-3">
@@ -51,8 +52,8 @@ lookup['name2idx'] = {'β': 0, 'γ': 1, 'ρ': 2, 'b': 3, 'c': 4,  'μ':5, 'δ':6
 
 ```js
 const p1 = get_param_table(sourcesink_lookup_map, lookup)
-const ax_vars = ["β", "γ", "b"] // choose the x,y,z axis, i.e. params to vary
-const fp1 = ["ρ", "c", "μ", "δ", "α"]
+const ax_vars = ["β", "γ", "ρ"] // choose the x,y,z axis, i.e. params to vary
+const fp1 = ["b", "c", "μ", "δ", "α"]
 ```
 
 <!-- Load lookup to filter main data -->
@@ -69,11 +70,16 @@ const sourcesink_lookup_map = sourcesink_lookup.reduce(function(map, obj) {
 ```
 
 ```js
-const chosen_row_id = sourcesink_lookup_map[`${f(ax_form['ax0'])}_${f(ax_form['ax1'])}_${f(fp_form['fp0'])}_${f(ax_form['ax2'])}_${f(fp_form['fp1'])}_${f(fp_form['fp2'])}_${f(fp_form['fp3'])}_${f(fp_form['fp4'])}`]
+const chosen_row_id = sourcesink_lookup_map[`${f(ax_form['ax0'])}_${f(ax_form['ax1'])}_${f(ax_form['ax2'])}_${f(fp_form['fp0'])}_${f(fp_form['fp1'])}_${f(fp_form['fp2'])}_${f(fp_form['fp3'])}_${f(fp_form['fp4'])}`]
 ```
 
 ```js
-`${f(ax_form['ax0'])}_${f(ax_form['ax1'])}_${f(fp_form['fp0'])}_${f(ax_form['ax2'])}_${f(fp_form['fp1'])}_${f(fp_form['fp2'])}_${f(fp_form['fp3'])}_${f(fp_form['fp4'])}`
+// data_hm.filter(d => d.param2 == 0.18 & d.param1 == 0.05)
+let row = phase_diagram_data.find(d => d.name == '0.05_0.18_0.09_0.26_1.0_0.1_1.0_0.15')
+```
+
+```js
+data_hm.filter(d => d.param2 == 0.18 && d.param1 == 0.05)
 ```
 
 <!-- filter data time evo plot  -->
@@ -121,11 +127,11 @@ const radio =  Generators.input(radioInput);
 const ax_formInput = Inputs.form({
   ax0: Inputs.range(p1[ax_vars[0]]['minmax'], {step: p1[ax_vars[0]]['s'], label: `${ax_vars[0]} (Imitation rate)`}),
   ax1: Inputs.range(p1[ax_vars[1]]['minmax'], {step: p1[ax_vars[1]]['s'], label: `${ax_vars[1]} (Recovery)`}),
-  ax2: Inputs.range(p1[ax_vars[2]]['minmax'], {step: p1[ax_vars[2]]['s'], label: `${ax_vars[2]} (Group benefits)`}),
+  ax2: Inputs.range(p1[ax_vars[2]]['minmax'], {step: p1[ax_vars[2]]['s'], label: `${ax_vars[2]} (Global behavioral)`}),
 })
 
 const fp_formInput = Inputs.form({
-  fp0: Inputs.range(p1[fp1[0]]['minmax'], {step: p1[fp1[0]]['s'], label: `${fp1[0]} (Recovery rate)`, value: p1[fp1[0]]
+  fp0: Inputs.range(p1[fp1[0]]['minmax'], {step: p1[fp1[0]]['s'], label: `${fp1[0]} (Group benefits)`, value: p1[fp1[0]]
   ['first_val']}),
   fp1: Inputs.range(p1[fp1[1]]['minmax'], {step: p1[fp1[1]]['s'], label: `${fp1[1]} (Inst. cost)`, value: p1[fp1[1]]
   ['first_val']}),
