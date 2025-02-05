@@ -1,7 +1,7 @@
 import * as Plot from "npm:@observablehq/plot";
 import { global_hm } from "./helpers.js";
 
-export function phase_diagram(data, radio, {width} = {}) {
+export function phase_diagram(data, radio, {width, tiplab} = {}) {
     return Plot.plot({
         width,
         height: 353,
@@ -27,7 +27,7 @@ export function phase_diagram(data, radio, {width} = {}) {
             fill: 'value',
             interpolate: "nearest",
             tip: true,
-            title: d => `ρ: ${d.param2}\nβ: ${d.param1}\nGlobal infection rate: ${(d.value*100).toFixed(2)}%`
+            title: d => `x: ${d.param1}\ny: ${d.param2}\nGlobal ${tiplab} rate: ${(d.value*100).toFixed(2)}%`
             })
         ]
         })

@@ -23,7 +23,7 @@ import { get_param_table, global_hm, get_data_heatmap, f, minmax, s } from "../c
 <div>
   <div class="card">
     <div class="grid grid-cols-3">
-      <div>Control the axis of the phase diagrams:<br><br>${radioInput}<br><br><i>Note: μ is fixed at 0.0001 </i></div>
+      <div>Control the axis of the phase diagrams:<br><br>${radioInput}<br><br><i>Note: μ is fixed at 0.0001. Pale asterisks indicate retained data point. See warning for details. </i></div>
       <div>${ax_formInput}</div>
       <div>${fp_formInput}</div>
     </div>
@@ -282,3 +282,12 @@ const radioc = {x:"β", y: "η"}
 
 
 
+
+
+<style>
+.warning {
+    display: block;  /* Ensures it behaves like a block element */
+    width: 100%;     /* Makes it take the full width of the parent */
+    max-width: 100vw; /* Prevents it from exceeding viewport width */
+}
+</style>

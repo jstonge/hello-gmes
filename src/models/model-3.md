@@ -1,6 +1,6 @@
 ---
 theme: dashboard
-title: Call-for-action
+title: Model 3
 style: ../custom-style.css
 toc: false
 sql:
@@ -9,10 +9,7 @@ sql:
 ---
 
 # Model 3
-
-<div class="warning" label="⚠️ Warning">To keep the visualization light, we "sparsified" the raw output with  <a href="https://github.com/jstonge/hello-gmes/blob/main/.sparsify.py#L5-L9">.sparsify.py#L5-L9</a>. That is, we throw away points where the absolute difference between two time steps is greater than 0.00001. This lead to premature termination of runs and more rough results. That said, the results are  qualitatively the same than with raw data. If you </div>
-
-<!-- DASHBOARD 1 -->
+## In which we add individuals the ability to disagree with the groups
 
 ```js
 import { plot_time_evo } from "../components/time_evo.js";
@@ -34,11 +31,12 @@ import { get_param_table, global_hm, get_data_heatmap, f, minmax, s } from "../c
     </div>
     <div class="grid grid-cols-3">
       <div class="grid-colspan-2">${resize((width) => plot_phase_diagram_facetted(data_hm, radio, { width }))}</div>
-      <div class="grid-colspan-1">${resize((width) => phase_diagram(data_hm, radio, { width }))}</div>
+      <div class="grid-colspan-1">${resize((width) => phase_diagram(data_hm, radio, { width, tiplab: "cooperation" }))}</div>
     </div>
   </div>
 </div>
 
+<div class="warning" label="⚠️ Warning">To keep the visualization light, we "sparsified" the raw output with  <a href="https://github.com/jstonge/hello-gmes/blob/main/.sparsify.py#L5-L9">.sparsify.py#L5-L9</a>. That is, we throw away points where the absolute difference between two time steps is greater than 0.00001. This lead to premature termination of runs and more rough results. That said, the results are  qualitatively the same than with raw data. If you want to run the app with raw data, follow the following <a href="https://github.com/jstonge/hello-gmes/blob/main/README.md#instruction-to-run-data-app-with-raw-data">instructions</a>.</div>
 
 
 <!-- IMPORT DATA -->
@@ -71,15 +69,6 @@ const sourcesink_lookup_map = sourcesink_lookup.reduce(function(map, obj) {
 
 ```js
 const chosen_row_id = sourcesink_lookup_map[`${f(ax_form['ax0'])}_${f(ax_form['ax1'])}_${f(ax_form['ax2'])}_${f(fp_form['fp0'])}_${f(fp_form['fp1'])}_${f(fp_form['fp2'])}_${f(fp_form['fp3'])}_${f(fp_form['fp4'])}`]
-```
-
-```js
-// data_hm.filter(d => d.param2 == 0.18 & d.param1 == 0.05)
-let row = phase_diagram_data.find(d => d.name == '0.05_0.18_0.09_0.26_1.0_0.1_1.0_0.15')
-```
-
-```js
-data_hm.filter(d => d.param2 == 0.18 && d.param1 == 0.05)
 ```
 
 <!-- filter data time evo plot  -->
@@ -131,10 +120,8 @@ const ax_formInput = Inputs.form({
 })
 
 const fp_formInput = Inputs.form({
-  fp0: Inputs.range(p1[fp1[0]]['minmax'], {step: p1[fp1[0]]['s'], label: `${fp1[0]} (Group benefits)`, value: p1[fp1[0]]
-  ['first_val']}),
-  fp1: Inputs.range(p1[fp1[1]]['minmax'], {step: p1[fp1[1]]['s'], label: `${fp1[1]} (Inst. cost)`, value: p1[fp1[1]]
-  ['first_val']}),
+  fp0: Inputs.range(p1[fp1[0]]['minmax'], {step: p1[fp1[0]]['s'], label: `${fp1[0]} (Group benefits)`, value: p1[fp1[0]]['first_val']}),
+  fp1: Inputs.range(p1[fp1[1]]['minmax'], {step: p1[fp1[1]]['s'], label: `${fp1[1]} (Inst. cost)`, value: p1[fp1[1]]['first_val']}),
   fp2: Inputs.range(p1[fp1[2]]['minmax'], {step: p1[fp1[2]]['s'], label: `${fp1[2]} (endogenous inst. change)`, value: p1[fp1[2]]['first_val']}),
   fp3: Inputs.range(p1[fp1[3]]['minmax'], {step: p1[fp1[3]]['s'], label: fp1[3], value: p1[fp1[3]]['first_val']}),
   fp4: Inputs.range(p1[fp1[4]]['minmax'], {step: p1[fp1[4]]['s'], label: `${fp1[4]} (endogenous rate of ind. change)`, value: p1[fp1[4]]['first_val']})
@@ -144,6 +131,66 @@ const ax_form = Generators.input(ax_formInput)
 const fp_form = Generators.input(fp_formInput)
 ```
 
+---
 
 
+## Math version
 
+Individuals have opinions about how their institution manages their public goods. For illustration's sake, we assume that the abstract potential dependency on the current state on the group now takes the form of allocating resources to scale up institutions. The first set of transition rates 
+    
+```tex
+\begin{align*}
+    \frac{d}{dt}M_{n,i}^\ell =&~ (n-i+1)\left[ \textcolor{red}{f}(\textcolor{purple}{s}(\ell) - 1) + \beta(i-1) + \rho \beta \phi \right]G_{i-1,\ell} \\
+                    &- (n-i)\left[ \textcolor{red}{f}(\textcolor{purple}{s}(\ell) - 1) + \beta i + \rho \beta \phi \right] G_{i-1,\ell} \\
+                    &+ (i+1) \left[ \textcolor{red}{f}(1 - \textcolor{purple}{s}(\ell)) + \gamma(n-i-1) \rho \gamma(n - \phi) \right] G_{i+1,\ell} \\
+                    &- i\left[ \textcolor{red}{f}(1 - \textcolor{purple}{s}(\ell)) + \gamma(n-i) + \rho \gamma (n-\phi) \right] G_{i,\ell}
+\end{align*} 
+```
+
+where _i_ is the number of cooperators, _n_ is group size, ϕ represents the influence of other groups on individual activation. And that
+
+```tex
+\phi = \sum_{i,\ell} i G_{i,\ell}
+```
+The function ${tex`\textcolor{red}{f}`} captures individual incentives to cooperate as the sigmoid function, where it is assumed that stronger institutions reduce the cost of cooperation. The function ${tex`\textcolor{purple}{s}`} models the perceived quality of the public good as a function of the institutional level. The overall dynamics allows us to explore how cooperation depends on the perceived quality of the public good as a function of institutional strength. Concretely, we have
+
+```tex
+\quad\quad\quad \textcolor{red}{f(x) = \frac{1}{1 + e^{-\alpha x}}}  \quad\quad\quad \textcolor{purple}{s(\ell) = \frac{1 - e^{-\alpha \ell}}{1 - e^{-\alpha}}}  \quad\quad\quad h(x) = e^{-\alpha x}
+```
+
+Also, we assume that the functions respect
+
+```tex
+\quad\quad\quad \textcolor{purple}{s(\ell) : \frac{ds}{d\ell} > 0} ; \quad\quad\quad \textcolor{red}{f(x): \frac{df}{dx} > 0} , \quad\quad\quad \textcolor{red}{f(0) = 1/2} , \quad\quad\quad \textcolor{red}{g(x): \frac{dg}{dx} > 0} , \quad\quad\quad \textcolor{red}{g(0) = 1/2}
+```
+
+That is, ${tex`\textcolor{red}{f(0)}`} and ${tex`\textcolor{red}{g(0)}`} indicate individual indifference with respect to group strategy.  The second set of transition rates includes resource requirement to upgrade institution, which here we assume to also take a sigmoid form:
+
+```tex
+\begin{align}
+    \notag \frac{d}{dt}E_{n,i}^\ell =&~ \textcolor{red}{g}(bi - c\ell) \left[\mu + \rho \dfrac{Z^{\ell}_{n,i}}{Z^{\ell-1}_{n,i}}\right]G_{n,i}^{\ell-1} 
+        - \textcolor{red}{g}(bi - c(\ell+1)) \left[\mu + \rho \dfrac{Z^{\ell+1}_{n,i}}{Z^{\ell}_{n,i}}\right]G_{n,i}^{\ell} \\ 
+        \notag &+  \left[ \mu \textcolor{red}{g}(c(\ell+1) - bi) + \rho  \textcolor{red}{g}(bi - c\ell) \dfrac{Z^{\ell}_{n,i}}{Z^{\ell+1}_{n,i}}\right] G_{n,i}^{\ell+1}  - 
+        \left[ \mu \textcolor{red}{g}(c\ell - bi) + \rho \textcolor{red}{g}(bi - c(\ell-1)) \dfrac{Z^{\ell - 1}_{n,i}}{Z^{\ell}_{n,i}} \right] G_{n,i}^{\ell} \; 
+\end{align} 
+```
+
+The fitness function take the form
+
+```tex
+Z_{\ell} = \frac{\sum_{i} G_{i,\ell}\ \textcolor{red}{\tilde{g}} (bi-c\ell)}{\sum_{i} G_{i,\ell}}
+```
+
+note that  ${tex`\textcolor{red}{g}`} (fitness function) and ${tex`\textcolor{red}{\tilde{g}}`} (cost-benefits for groups) are taken to be equal to function ${tex`\textcolor{red}{f}`} (they share the same properties).
+
+## Why is it interesting?
+
+In the [previous model](./call-for-action.md), we explored how the copying rate of institutions, ${tex`\eta`}, was able to separate the timescale of information and contagion. Here, we are interested in how playing with the of  ${tex`\mu`} means that groups change their institutions more independently and less because of imitating others. This is a result of how within-group members are incentivized by the policies, as tuned by ${tex`\alpha`}. 
+
+<style>
+.warning {
+    display: block;  /* Ensures it behaves like a block element */
+    width: 100%;     /* Makes it take the full width of the parent */
+    max-width: 100vw; /* Prevents it from exceeding viewport width */
+}
+</style>

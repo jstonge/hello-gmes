@@ -34,7 +34,7 @@ export function plot_time_evo(data, is_prop, {width, yaxis} = {}) {
           }),
       Plot.dotY(
         data, {
-          x: 'timestep', y: is_prop ? "value_prop" : "value", stroke: "L", tip: true
+          x: 'timestep', y: is_prop ? "value_prop" : "value", stroke: "L", symbol: "asterisk", tip: true, opacity: 0.4
           }),
       Plot.frame()
     ]
