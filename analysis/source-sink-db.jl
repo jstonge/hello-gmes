@@ -19,7 +19,7 @@ end
 function model1()
   SQLite.execute(db, """DROP TABLE IF EXISTS sourcesink1""")
   param_list = []
-  for β=0.:0.02:0.22, γ= 0.9:0.1:1.1, ρ=0.1:0.15:0.40, b=0.02:0.02:0.22, c=0.05:0.2:2.0
+  for β=0.:0.02:0.22, γ=0.9:0.1:1.1, ρ=0.1:0.15:0.40, b=0.02:0.02:0.22, c=0.05:0.2:2.0
     μ = 1e-4
     params = (β, γ, ρ, b, c, μ)
     push!(param_list, params)
@@ -46,9 +46,9 @@ function model3()
   SQLite.execute(db, """DROP TABLE IF EXISTS sourcesink3""")
   param_list = []
   n, Lmax = 20, 5
-  b, c, μ, δ = 0.26, 1., 0.1, 1.
+  b, c, δ = 0.26, 1., 0.1, 1.
   @assert n*b - Lmax*c > 0 "lower bound"
-  for β=0.0:0.01:0.15, γ= 0.01:0.01:0.2, ρ=0.0:0.01:0.15, α=0.15:0.01:0.2
+  for β=0.05:0.05:0.2, γ=0.05:0.05:0.2, ρ=0.1:0.05:0.4, α=0.05:0.02:0.35, μ=0.05:0.02:0.35
     params = (β, γ, ρ, b, c, μ, δ, α)
     push!(param_list, params)
   end
