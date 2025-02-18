@@ -10,7 +10,7 @@ You have three ways to interact with our project:
 - `Online`: a dashboard lives [here](https://joint-lab.observablehq.cloud/hello-gmes/). You can explore the parameters sweep that we have precomputed.
 - `Make`: follow the installation steps, then you should be able to do single runs using `make` (see installation below).
 - `Code`: see [this repo](https://github.com/jstonge/InstitutionalDynamics.jl) or this [example folder](analysis/examples).
-   - There is also a [Pluto notebook](https://jstonge.github.io/hello-gmes/analysis/examples/notebook.html).
+   - There is also a `./analysis/examples/notebook.jl` showing a side by side comparison of model 1 and 3. See below for installation.
 
 For the brave, you can run the single runs (run with a chosen set of parameters) with `make`, and launch the app. The run will show up in the `single-run/` page once finished running:
 
@@ -49,6 +49,18 @@ julia> ]
 ```
 
 Right now the libs are compiled for `Julia 1.10` and higher. 
+
+## Instructions for Pluto
+
+It is super straightforward. You `add Pluto` as the usual. Then you run
+
+```zsh
+julia
+julia> using Pluto
+julia> Pluto.run()
+```
+
+You can find the notebook in  `./analysis/examples/notebook.jl`. 
 
 ## Instruction to run data app with raw data
 
