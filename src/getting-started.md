@@ -8,6 +8,7 @@ You have three ways to interact with our project:
 - `Online`: a dashboard lives [here](https://joint-lab.observablehq.cloud/hello-gmes/). You can explore the parameters sweep that we have precomputed.
 - `Make`: follow the installation steps, then you should be able to do single runs using `make` (see installation below).
 - `Code`: see [this repo](https://github.com/jstonge/InstitutionalDynamics.jl) or this [example folder](https://github.com/jstonge/hello-gmes/tree/main/src/examples).
+    - `Pluto.jl`: There is also a [Pluto notebook](../analysis/examples/notebook.jl) that uses ☝️
 
 ## Installation
 
