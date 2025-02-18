@@ -44,9 +44,45 @@ import { get_param_table, global_hm, get_data_heatmap, f, minmax, s } from "../c
 
 _Institutional localization_: In some regime, we can see that some institutional levels dominate phase space. The faceted figure on the bottom corresponds to  **Figure 5** in the paper. 
 
+
 <img src="../assets/inst_local.png" alt="quadrant" style="width:30%">
 
 <img src="../assets/paper1.png" alt="quadrant" style="width:60%">
+
+
+## Math version
+
+The first expression is about diffusion of cooperation at individual-level:
+    
+```tex
+\begin{align*}
+    \frac{d}{dt}G_{i,\ell}^\text{diff} =&~ (n-1+1)\ell \left[ \beta(i-1) + \rho\beta\phi \right]G_{i-1,\ell} \\
+                    &- (n-i)\ell\left[ \beta i + \rho\beta\phi \right] G_{i,\ell} \\
+                    &+ (i+1) \gamma G_{i+1,\ell} - i \gamma G_{i,\ell}
+\end{align*} 
+```
+where _i_ is the number of cooperators, _n_ is group size and where
+
+```tex
+\begin{align*}
+    \phi = \sum_{i',\ell'}i' G_{i',\ell'}
+\end{align*} 
+```
+
+In general, one can think of ρβϕ as the outgroup influence on individual activation. The second expression is about the selection process that group level
+
+```tex
+\begin{align}
+    \notag \frac{d}{dt}G_{i,\ell}^\text{select} =&~ \rho \left[ (\mu + \frac{Z_{\ell}}{Z_{\ell-1}})G_{i,\ell-1}  + (\mu + \frac{Z_{\ell}}{Z_{\ell+1}} )G_{i,\ell+1}  \right] \\ 
+        \notag &-  \rho(\frac{Z_{\ell-1}}{Z_{\ell}} + \frac{Z_{\ell+1}}{Z_{\ell}} + 2\mu) G_{i}^{\ell} 
+\end{align} 
+```
+
+where μ us a constant rate of transition to allow institutional innovation. The fitness function takes the form
+
+```tex
+Z_{\ell} = \frac{\sum_{i'} \exp(b i' - c\ell)G_{i',\ell}}{\sum_{i'} G_{i',\ell}}
+```
 
 <!-- IMPORT DATA -->
 

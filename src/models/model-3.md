@@ -4,7 +4,7 @@ title: Model 3
 style: ../custom-style.css
 toc: false
 sql:
-  sourcesink: ../data/sourcesink3_sparsified.parquet
+  sourcesink: ../data/sourcesink3.parquet
   sourcesink_lookup: ../data/sourcesink3_lookup.parquet
 ---
 
@@ -21,7 +21,7 @@ import { get_param_table, global_hm, get_data_heatmap, f, minmax, s } from "../c
 <div>
   <div class="card">
     <div class="grid grid-cols-3">
-      <div>Control the axis of the phase diagrams (see below for parameter definition): ${radioInput}</div>
+      <div>Control the axis of the phase diagrams:<br><br>${radioInput}<br><br><i>Note: b and c are fixed. Don't bother with δ either. Pale asterisks indicate retained data point. See warning for details. </i></div>
       <div>${ax_formInput}</div>
       <div>${fp_formInput}</div>
     </div>
@@ -36,7 +36,7 @@ import { get_param_table, global_hm, get_data_heatmap, f, minmax, s } from "../c
   </div>
 </div>
 
-<div class="warning" label="⚠️ Warning">To keep the visualization light, we "sparsified" the raw output with  <a href="https://github.com/jstonge/hello-gmes/blob/main/.sparsify.py#L5-L9">.sparsify.py#L5-L9</a>. That is, we throw away points where the absolute difference between two time steps is greater than 0.00001. This lead to premature termination of runs and more rough results. That said, the results are  qualitatively the same than with raw data. If you want to run the app with raw data, follow the following <a href="https://github.com/jstonge/hello-gmes/blob/main/README.md#instruction-to-run-data-app-with-raw-data">instructions</a>.</div>
+<div class="warning" label="⚠️ Warning">To keep the visualization light, we "sparsified" the raw output with  <a href="https://github.com/jstonge/hello-gmes/blob/main/.sparsify.py#L5-L9">.sparsify.py#L5-L9</a>. That is, we throw away points where the absolute difference between two time steps is  less than 0.00001. This lead to premature termination of runs and more rough results. That said, the results are  qualitatively the same than with raw data. If you want to run the app with raw data, follow the following <a href="https://github.com/jstonge/hello-gmes/blob/main/README.md#instruction-to-run-data-app-with-raw-data">instructions</a>.</div>
 
 
 <!-- IMPORT DATA -->
@@ -50,8 +50,8 @@ lookup['name2idx'] = {'β': 0, 'γ': 1, 'ρ': 2, 'b': 3, 'c': 4,  'μ':5, 'δ':6
 
 ```js
 const p1 = get_param_table(sourcesink_lookup_map, lookup)
-const ax_vars = ["β", "γ", "ρ"] // choose the x,y,z axis, i.e. params to vary
-const fp1 = ["b", "c", "μ", "δ", "α"]
+const ax_vars = ["μ", "β", "ρ"] // choose the x,y,z axis, i.e. params to vary
+const fp1 = ["b", "c", "α", "δ", "γ"]
 ```
 
 <!-- Load lookup to filter main data -->
@@ -68,7 +68,8 @@ const sourcesink_lookup_map = sourcesink_lookup.reduce(function(map, obj) {
 ```
 
 ```js
-const chosen_row_id = sourcesink_lookup_map[`${f(ax_form['ax0'])}_${f(ax_form['ax1'])}_${f(ax_form['ax2'])}_${f(fp_form['fp0'])}_${f(fp_form['fp1'])}_${f(fp_form['fp2'])}_${f(fp_form['fp3'])}_${f(fp_form['fp4'])}`]
+const param_str = `${f(ax_form['ax1'])}_${f(fp_form['fp4'])}_${f(ax_form['ax2'])}_${f(fp_form['fp0'])}_${f(fp_form['fp1'])}_${f(ax_form['ax0'])}_${f(fp_form['fp3'])}_${f(fp_form['fp2'])}`
+const chosen_row_id = sourcesink_lookup_map[param_str]
 ```
 
 <!-- filter data time evo plot  -->
@@ -114,17 +115,17 @@ const radioInput = Inputs.form({
 const radio =  Generators.input(radioInput);
 
 const ax_formInput = Inputs.form({
-  ax0: Inputs.range(p1[ax_vars[0]]['minmax'], {step: p1[ax_vars[0]]['s'], label: `${ax_vars[0]} (Imitation rate)`}),
-  ax1: Inputs.range(p1[ax_vars[1]]['minmax'], {step: p1[ax_vars[1]]['s'], label: `${ax_vars[1]} (Recovery)`}),
+  ax0: Inputs.range(p1[ax_vars[0]]['minmax'], {step: p1[ax_vars[0]]['s'], label: `${ax_vars[0]} (endogenous inst. change)`}),
+  ax1: Inputs.range(p1[ax_vars[1]]['minmax'], {step: p1[ax_vars[1]]['s'], label: `${ax_vars[1]} (endogenous rate of ind. changey)`}),
   ax2: Inputs.range(p1[ax_vars[2]]['minmax'], {step: p1[ax_vars[2]]['s'], label: `${ax_vars[2]} (Global behavioral)`}),
 })
 
 const fp_formInput = Inputs.form({
   fp0: Inputs.range(p1[fp1[0]]['minmax'], {step: p1[fp1[0]]['s'], label: `${fp1[0]} (Group benefits)`, value: p1[fp1[0]]['first_val']}),
-  fp1: Inputs.range(p1[fp1[1]]['minmax'], {step: p1[fp1[1]]['s'], label: `${fp1[1]} (Inst. cost)`, value: p1[fp1[1]]['first_val']}),
-  fp2: Inputs.range(p1[fp1[2]]['minmax'], {step: p1[fp1[2]]['s'], label: `${fp1[2]} (endogenous inst. change)`, value: p1[fp1[2]]['first_val']}),
-  fp3: Inputs.range(p1[fp1[3]]['minmax'], {step: p1[fp1[3]]['s'], label: fp1[3], value: p1[fp1[3]]['first_val']}),
-  fp4: Inputs.range(p1[fp1[4]]['minmax'], {step: p1[fp1[4]]['s'], label: `${fp1[4]} (endogenous rate of ind. change)`, value: p1[fp1[4]]['first_val']})
+  fp1: Inputs.range(p1[fp1[1]]['minmax'], {step: p1[fp1[1]]['s'], label: `${fp1[1]} (Inst. cost)`, disabled: true, value: p1[fp1[1]]['first_val']}),
+  fp2: Inputs.range(p1[fp1[2]]['minmax'], {step: p1[fp1[2]]['s'], label: `${fp1[2]} (Imitation rate)`, value: p1[fp1[2]]['first_val']}),
+  fp3: Inputs.range(p1[fp1[3]]['minmax'], {step: p1[fp1[3]]['s'], label: fp1[3], disabled: true, value: p1[fp1[3]]['first_val']}),
+  fp4: Inputs.range(p1[fp1[4]]['minmax'], {step: p1[fp1[4]]['s'], label: `${fp1[4]} (Recovery)`, value: p1[fp1[4]]['first_val']})
 })
 
 const ax_form = Generators.input(ax_formInput)
@@ -158,6 +159,13 @@ The function ${tex`\textcolor{red}{f}`} captures individual incentives to cooper
 \quad\quad\quad \textcolor{red}{f(x) = \frac{1}{1 + e^{-\alpha x}}}  \quad\quad\quad \textcolor{purple}{s(\ell) = \frac{1 - e^{-\alpha \ell}}{1 - e^{-\alpha}}}  \quad\quad\quad h(x) = e^{-\alpha x}
 ```
 
+For a given set of params, function ${tex`\textcolor{red}{f}`} looks like:
+
+<picture>
+        <source srcset="../assets/test.png" media="(prefers-color-scheme: dark)">
+        <img src="../assets/test.png">
+</picture>
+
 Also, we assume that the functions respect
 
 ```tex
@@ -185,7 +193,7 @@ note that  ${tex`\textcolor{red}{g}`} (fitness function) and ${tex`\textcolor{re
 
 ## Why is it interesting?
 
-In the [previous model](./call-for-action.md), we explored how the copying rate of institutions, ${tex`\eta`}, was able to separate the timescale of information and contagion. Here, we are interested in how playing with the of  ${tex`\mu`} means that groups change their institutions more independently and less because of imitating others. This is a result of how within-group members are incentivized by the policies, as tuned by ${tex`\alpha`}. 
+In the [previous model](./call-for-action.md), we explored how the copying rate of institutions, ${tex`\eta`}, was able to separate the timescale of information and contagion. Here, we are interested in how playing with the of  ${tex`\mu`} means that groups change their institutions more independently and less because of imitating others. By look at the ${tex`\mu`}/${tex`\rho`}, we can have a better idea of how the ratio of endogenous institutional influence to exogeneous on the group influence cooperation. 
 
 <style>
 .warning {
@@ -193,4 +201,12 @@ In the [previous model](./call-for-action.md), we explored how the copying rate 
     width: 100%;     /* Makes it take the full width of the parent */
     max-width: 100vw; /* Prevents it from exceeding viewport width */
 }
+
+img {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 0 0 0.75px rgba(128, 128, 128, 0.2), 0 6px 12px 0 rgba(0, 0, 0, 0.2);
+}
+
 </style>

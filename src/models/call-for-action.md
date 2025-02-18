@@ -38,7 +38,8 @@ import { get_param_table, global_hm, get_data_heatmap, f, minmax, s } from "../c
   </div>
 </div>
 
-<div class="warning" label="⚠️ Warning">The visualization may give slightly different results than our paper. To keep the visualization lightweight, we sparsified the raw output with  <a href="https://github.com/jstonge/hello-gmes/blob/main/.sparsify.py#L5-L9">.sparsify.py#L5-L9</a>. In the highlighted lines, we throw away points where the absolute difference between two time steps is greater than 0.0001. This lead to premature termination of runs and more rough results. That said, the results should be  qualitatively the same in the paper. If not, please let us know. Also, in the paper we use different initial conditions to demonstrate different mechanisms, which we didn't reproduce here. Finally, note that if the range input is disabled or a parameter is missing, is that we didn't run the parameter sweep with this set of values</div>
+<div class="warning" label="⚠️ Warning">The visualization may give slightly different results than our paper. To keep the visualization lightweight, we sparsified the raw output with  <a href="https://github.com/jstonge/hello-gmes/blob/main/.sparsify.py#L5-L9">.sparsify.py#L5-L9</a>. That is, we throw away points where the absolute difference between two time steps is  less than 0.00001. This lead to premature termination of runs and more rough results. That said, the results should be  qualitatively the same in the paper. If not, please let us know. Also, in the paper we use different initial conditions to demonstrate different mechanisms, which we didn't reproduce here. Finally, note that if the range input is disabled or a parameter is missing, is that we didn't run the parameter sweep with this set of values. If you want to run the app with raw data, follow the following <a href="https://github.com/jstonge/hello-gmes/blob/main/README.md#instruction-to-run-data-app-with-raw-data">instructions</a>.</div>
+</div>
 
 ## Decomposing the call for action
 
@@ -278,10 +279,6 @@ const fp3_form = Generators.input(fp3_formInput)
 ```js
 const radioc = {x:"β", y: "η"}
 ```
-
-
-
-
 
 
 <style>
