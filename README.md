@@ -10,6 +10,7 @@ You have three ways to interact with our project:
 - `Online`: a dashboard lives [here](https://joint-lab.observablehq.cloud/hello-gmes/). You can explore the parameters sweep that we have precomputed.
 - `Make`: follow the installation steps, then you should be able to do single runs using `make` (see installation below).
 - `Code`: see [this repo](https://github.com/jstonge/InstitutionalDynamics.jl) or this [example folder](analysis/examples).
+   - There is also a [Pluto notebook](https://jstonge.github.io/hello-gmes/analysis/examples/notebook.html).
 
 For the brave, you can run the single runs (run with a chosen set of parameters) with `make`, and launch the app. The run will show up in the `single-run/` page once finished running:
 
