@@ -27,7 +27,7 @@ export function phase_diagram(data, radio, {width, tiplab} = {}) {
             fill: 'value',
             interpolate: "nearest",
             tip: true,
-            title: d => `x: ${d.param1}\ny: ${d.param2}\nGlobal ${tiplab} rate: ${(d.value*100).toFixed(2)}%`
+            title: d => `${radio['x']}: ${d.param1}\n${radio['y']}: ${d.param2}\nGlobal ${tiplab} rate: ${(d.value*100).toFixed(2)}%`
             })
         ]
         })

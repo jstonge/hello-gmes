@@ -30,7 +30,7 @@ export function plot_time_evo(data, is_prop, {width, yaxis} = {}) {
         }),
       Plot.lineY(
         data, {
-          x: 'timestep', y: is_prop ? "value_prop" : "value", stroke: "L", tip: true
+          x: 'timestep', y: is_prop ? "value_prop" : "value", stroke: "L"
           }),
       Plot.dotY(
         data, {

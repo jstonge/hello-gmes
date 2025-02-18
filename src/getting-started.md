@@ -1,7 +1,5 @@
 # Welcome
-
-
-This is an experimental project that seek to combine group-based modeling and interactive visualization under the same roof. If you want a friendly book to better understand group-based, or approximate, master equations, [start here](https://cosmo-notes.github.io/tame/chapters/index.html).
+## This experimental project aims to integrate group-based modeling with interactive visualization. For an accessible introduction to group-based or approximate master equations, you can [start here](https://cosmo-notes.github.io/tame/chapters/index.html).
 
 ## Usage
 

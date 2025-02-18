@@ -7,7 +7,8 @@ export function plot_phase_diagram_facetted(data, radio, { width } = {}) {
       marginLeft: 60,
       color: {
         type: "linear",
-        scheme: "Greens"
+        scheme: "Greens",
+        domain: [0,1]
       },
       fy: { label: "" },
       facet: {  data: data, x: "L", y: 'fx' },
@@ -30,7 +31,7 @@ export function plot_phase_diagram_facetted(data, radio, { width } = {}) {
         Plot.tip(data, Plot.pointer({
           x: "param1",
           y: "param2",
-          title: d => `ρ: ${d.param2}\nβ: ${d.param1}\nInst. of that\nstrength: ${(d.value_prop*100).toFixed(2)}%`
+          title: d => `${radio['x']}: ${d.param2}\n${radio['y']}: ${d.param1}\nInst. of that\nstrength: ${(d.value_prop*100).toFixed(2)}%`
         }))
       ]
     })
