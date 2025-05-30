@@ -2,15 +2,7 @@
 dist/
 src/.observablehq/cache/
 node_modules/
-src/data/single_run/*
-etc/figs_paper/
-etc/netsci2023/netsci2023_files/
-etc/netsci2023/figs/
-analysis/examples/SlowInst_endemic.pdf
-analysis/examples/.cache/*
-.venv/
-jsconfig.json
-
+yarn-error.log
 tmp/
 docs/data/single_run/*
 etc/figs_paper/
