@@ -1,7 +1,5 @@
 # Welcome
-_We study how group-based models impact how we think about all sorts of contagion._
-
-This is an experimental project that seek to combine group-based modeling and interactive visualization under the same roof. If you want a friendly book to better understand group-based, or approximate, master equations, [start here](https://cosmo-notes.github.io/tame/chapters/index.html).
+## This experimental project aims to integrate group-based modeling with interactive visualization. For an accessible introduction to group-based or approximate master equations, you can [start here](https://cosmo-notes.github.io/tame/chapters/index.html).
 
 ## Usage
 
@@ -9,24 +7,8 @@ You have three ways to interact with our project:
 
 - `Online`: a dashboard lives [here](https://joint-lab.observablehq.cloud/hello-gmes/). You can explore the parameters sweep that we have precomputed.
 - `Make`: follow the installation steps, then you should be able to do single runs using `make` (see installation below).
-- `Code`: see [this repo](https://github.com/jstonge/InstitutionalDynamics.jl) or this [example folder](analysis/examples).
-   - There is also a `./analysis/examples/notebook.jl` showing a side by side comparison of model 1 and 3. See below for installation.
-
-For the brave, you can run the single runs (run with a chosen set of parameters) with `make`, and launch the app. The run will show up in the `single-run/` page once finished running:
-
-```zsh
-# run single run with make, e.g.
-make single-run-coevo BETA=0.16 RHO=0.05 ETA=0.26 XI=1 ALPHA=1. GAMMA=1 B=0.2 C=0.5
-# install observable app
-npm install
-# launch the app
-npm run dev
-```
-If you don't feel like it, then you are stuck with the preselected parameter sweep we have done for the paper. It is always possible to run the Julia code.
-
-#### OxCGRT data
-
-We are in the process of testing our theorerical model with the OxCGRT data. The OxCGRT data tracked policies in response to the COVID-19 pandemic at national and subnational level. The policies details are described [here](https://github.com/OxCGRT/covid-policy-dataset/blob/main/documentation_and_codebook.md#codebook-and-interpretation-guidance). Maps of the policies can be found in the live dashboard.
+- `Code`: see [this repo](https://github.com/jstonge/InstitutionalDynamics.jl) or this [example folder](https://github.com/jstonge/hello-gmes/tree/main/src/examples).
+    - `Pluto.jl`: There is also a [Pluto notebook](../analysis/examples/notebook.jl) that uses ☝️
 
 ## Installation
 
@@ -48,39 +30,21 @@ julia> ]
 # ctrl+d to quit
 ```
 
-Right now the libs are compiled for `Julia 1.10` and higher. 
-
-## Instructions for Pluto
-
-It is super straightforward. You `add Pluto` as the usual. Then you run
+Right now the libs are compiled for `Julia 1.10` and higher. Once done, we can run the single-run with `make`, and launch the app. The run will show up in the `single-run/` page once finished running:
 
 ```zsh
-julia
-julia> using Pluto
-julia> Pluto.run()
+# run single run with make, e.g.
+make single-run-coevo BETA=0.16 RHO=0.05 ETA=0.26 XI=1 ALPHA=1. GAMMA=1 B=0.2 C=0.5
+# install observable app
+npm install
+# launch the app
+npm run dev
 ```
-
-You can find the notebook in  `./analysis/examples/notebook.jl`. 
-
-## Instruction to run data app with raw data
-
-- clone this repo
-- ask me for the data (or you'll find it on the VACC `/users/j/s/jstonge1/hello-gmes/results/processed`, you should be able to access it)
-- put the data in the `src/data`
-- open web page source code for a selected model:
-   - model 1: `src/models/source-sink.md`
-   - model 2: `src/models/call-for-action.md`
-   - model 3: `src/models/model-3.md`
-- In the YAML at the top, change file `$(model_name)_sparsified.parquet` to `$(model_name).parquet`. The YAML looks like:
-<img width="500" alt="Screenshot 2025-02-04 at 9 47 24 AM" src="https://github.com/user-attachments/assets/f6f394cb-0503-484d-b085-f77a120d2496" />
-
-- run project using `npm run dev` (see instructions below if you don't have npm installed)
 
 ## Project structure
 
-We use[Observable Framework](https://observablehq.com/framework/project-structure) structure, but modify it a little to accomodate our simulation work. On top of the Observable Framework project that mostly lives in `src/` (see hidden summary below for authors' description), we have a project structure following from the [Turing Way's repository structure](https://book.the-turing-way.org/project-design/project-repo/project-repo-advanced#example-with-every-possible-folder):
+We take as starting point the [Observable Framework](https://observablehq.com/framework/project-structure) structure, but modify it a little to accomodate our simulation work. That is, on top of the Observable Framework project that mostly lives in `src/` (see hidden summary below for authors' description), we have a project structure heavily inspired from the [Turing Way's repository structure](https://book.the-turing-way.org/project-design/project-repo/project-repo-advanced#example-with-every-possible-folder):
 
-Our simulation code lives in `analysis/`. We have a subfolder called `RSB_submission` to play with code we written for our paper submitted to the _Royal Society B_. We use the [Julia programming language](https://julialang.org/) as our backend. At the root-directory level, we have `Manifest.toml` and `Project.toml` to specify the environment to run the simulation.
 
 <details><summary>How to get started with Observable Framework</summary>
 
@@ -141,4 +105,3 @@ A typical Framework project looks like this:
 ##
 
 </details>
-
