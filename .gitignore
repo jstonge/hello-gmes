@@ -5,3 +5,7 @@ node_modules/
 yarn-error.log
 tmp/
 docs/data/single_run/*
+etc/figs_paper/
+etc/netsci2023/netsci2023_files/
+etc/netsci2023/figs/
+src/examples/SlowInst_endemic.pdf

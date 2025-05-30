@@ -32,6 +32,10 @@ export function plot_time_evo(data, is_prop, {width} = {}) {
         data, {
           x: 'timestep', y: is_prop ? "value_prop" : "value", stroke: "L", tip: true
           }),
+      Plot.dotY(
+        data, {
+          x: 'timestep', y: is_prop ? "value_prop" : "value", stroke: "L", tip: true
+          }),
       Plot.frame()
     ]
   });
